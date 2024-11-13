@@ -2,8 +2,8 @@ module ultralightd.bindings.ultralight;
 
 import std.stdint;
 
-//alias ULChar16 = wchar;
-alias ULChar16 = ushort;
+alias ULChar16 = wchar;
+//alias ULChar16 = ushort;
 
 alias ULConfig = C_Config*;
 alias ULRenderer = C_Renderer*;
@@ -23,6 +23,24 @@ alias ULSurface = C_Surface*;
 alias ULBitmapSurface = C_Surface*;
 alias ULFontFile = C_FontFile*;
 alias ULImageSource = C_ImageSource*;
+
+/++
+ + View
+ +/
+
+alias ULChangeTitleCallback = void function(void*, ULView, ULString);
+alias ULChangeURLCallback = void function(void*, ULView, ULString);
+alias ULChangeTooltipCallback = void function(void*, ULView, ULString);
+alias ULChangeCurserCallback = void function(void*, ULView, ULCursor);
+alias ULAddConsoleMessageCallback = void function(void*, ULView, ULMessageSource, ULMessageLevel, ULString, uint, uint, ULString);
+alias ULCreateChildViewCallback = ULView function(void*, ULView, ULString, ULString, bool, ULIntRect);
+alias ULCreateInspectorViewCallback = ULView function(void*, ULView, bool, ULString);
+alias ULBeginLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+alias ULFailLoadingCallback = void function(void*, ULView, ulong, bool, ULString, ULString, ULString, int);
+alias ULWindowObjectReadyCallback = void function(void*, ULView, ulong, bool, ULString);
+alias ULDOMReadyCallback = void function(void*, ULView, ulong, bool, ULString);
+alias ULUpdateHistoryCallback = void function(void*, ULView);
 
 /++
  + Low-level bindings for the Ultralight C API.
@@ -899,5 +917,255 @@ public extern(C)
      +/
     ULString ulViewEvaluateScript(ULView, ULString, ULString*);
 
-    // TODO https://github.com/ultralight-ux/Ultralight-API/blob/master/Ultralight/CAPI/CAPI_View.h#L309
+    /++
+     + Check if can navigate backwards in history.
+     +/
+    bool ulViewCanGoBack(ULView);
+
+    /++
+     + Check if can navigate forwards in history.
+     +/
+    bool ulViewCanGoForward(ULView);
+
+    /++
+     + Navigate backwards in history.
+     +/
+    void ulViewGoBack(ULView);
+
+    /++
+     + Navigate forwards in history.
+     +/
+    void ulViewGoForward(ULView);
+
+    /++
+     + Navigate to arbitrary offset in history.
+     +/
+    void ulViewGoToHistoryOffset(ULView, int);
+
+    /++
+     + Reload current page.
+     +/
+    void ulViewReload(ULView);
+
+    /++
+     + Stop all page loads.
+     +/
+    void ulViewStop(ULView);
+
+    /++
+     + Give focus to the View.
+     + You should call this to give visual indication that the View has input focus (changes active
+     + text selection colors, for example).
+     +/
+    void ulViewFocus(ULView);
+
+    /++
+     + Remove focus from the View and unfocus any focused input elements.
+     + You should call this to give visual indication that the View has lost input focus.
+     +/
+    void ulViewUnfocus(ULView);
+
+    /++
+     + Whether or not the View has focus.
+     +/
+    bool ulViewHasFocus(ULView);
+
+    /++
+     + Whether or not the View has an input element with visible keyboard focus (indicated by a
+     + blinking caret).
+     + You can use this to decide whether or not the View should consume keyboard input events (useful
+     + in games with mixed UI and key handling).
+     +/
+    bool ulViewHasInputFocus(ULView);
+
+    /++
+     + Fire a keyboard event.
+     +/
+    void ulViewFireKeyEvent(ULView, ULKeyEvent);
+
+    /++
+     + Fire a mouse event.
+     +/
+    void ulViewFireMouseEvent(ULView, ULMouseEvent);
+
+    /++
+     + Fire a scroll event.
+     +/
+    void ulViewFireScrollEvent(ULView, ULScrollEvent);
+
+    /++
+     + Set callback for when the page title changes.
+     +/
+    void ulViewSetChangeTitleCallback(ULView, ULChangeTitleCallback, void*);
+
+    /++
+     + Set callback for when the page URL changes.
+     +/
+    void ulViewSetChangeURLCallback(ULView, ULChangeURLCallback, void*);
+
+    /++
+     + Set callback for when the tooltip changes (usually result of a mouse hover).
+     +/
+    void ulViewSetChangeTooltipCallback(ULView, ULChangeTooltipCallback, void*);
+
+    /++
+     + Set callback for when the mouse cursor changes.
+     +/
+    void ulViewSetChangeCursorCallback(ULView, ULChangeCurserCallback, void*);
+
+    /++
+     + Set callback for when a message is added to the console (useful for JavaScript / network errors
+     + and debugging).
+     +/
+    void ulViewSetAddConsoleMessageCallback(ULView, ULAddConsoleMessageCallback, void*);
+
+    /++
+     + Set callback for when the page wants to create a new View.
+     + This is usually the result of a user clicking a link with target="_blank" or by JavaScript
+     + calling window.open(url).
+     + To allow creation of these new Views, you should create a new View in this callback, resize it
+     + to your container, and return it. You are responsible for displaying the returned View.
+     + You should return NULL if you want to block the action.
+     +/
+    void ulViewSetCreateChildViewCallback(ULView, ULCreateChildViewCallback, void*);
+
+    /++
+     + Set callback for when the page wants to create a new View to display the local inspector in.
+     + You should create a new View in this callback, resize it to your
+     + container, and return it. You are responsible for displaying the returned View.
+     +/
+    void ulViewSetCreateInspectorViewCallback(ULView, ULCreateInspectorViewCallback, void*);
+
+    /++
+     + Set callback for when the page begins loading a new URL into a frame.
+     +/
+    void ulViewSetBeginLoadingCallback(ULView, ULBeginLoadingCallback, void*);
+
+    /++
+     + Set callback for when the page finishes loading a URL into a frame.
+     +/
+    void ulViewSetFinishLoadingCallback(ULView, ULFinishLoadingCallback, void*);
+
+    /++
+     + Set callback for when an error occurs while loading a URL into a frame.
+     +/
+    void ulViewSetFailLoadingCallback(ULView, ULFailLoadingCallback, void*);
+
+    /++
+     + Set callback for when the JavaScript window object is reset for a new page load.
+     + This is called before any scripts are executed on the page and is the earliest time to setup any
+     + initial JavaScript state or bindings.
+     + The document is not guaranteed to be loaded/parsed at this point. If you need to make any
+     + JavaScript calls that are dependent on DOM elements or scripts on the page, use DOMReady
+     + instead.
+     + The window object is lazily initialized (this will not be called on pages with no scripts).
+     +/
+    void ulViewSetWindowObjectReadyCallback(ULView, ULWindowObjectReadyCallback, void*);
+
+    /++
+     + Set callback for when all JavaScript has been parsed and the document is ready.
+     + This is the best time to make any JavaScript calls that are dependent on DOM elements or scripts
+     + on the page.
+     +/
+    void ulViewSetDOMReadyCallback(ULView, ULDOMReadyCallback, void*);
+
+    /++
+     + Set callback for when the history (back/forward state) is modified.
+     +/
+    void ulViewSetUpdateHistoryCallback(ULView, ULUpdateHistoryCallback, void*);
+
+    /++
+     + Set whether or not a view should be repainted during the next call to ulRender.
+     + @note  This flag is automatically set whenever the page content changes but you can set it
+     +        directly in case you need to force a repaint.
+     +/
+    void ulViewSetNeedsPaint(ULView, bool);
+
+    /++
+     + Whether or not a view should be painted during the next call to ulRender.
+     +/
+    bool ulViewGetNeedsPaint(ULView);
+
+    /++
+     + Create an Inspector View to inspect / debug this View locally.
+     + This will only succeed if you have the inspector assets in your filesystem-- the inspector
+     + will look for file:///inspector/Main.html when it first loads.
+     + You must handle ulViewSetCreateInspectorViewCallback so that the library has a View to display
+     + the inspector in. This function will call the callback only if an inspector view is not
+     + currently active.
+     +/
+    void ulViewCreateLocalInspectorView(ULView);
+
+
+
+
+
+    /++
+     + String
+     +/
+    
+    /++
+     + Create string from null-terminated ASCII C-string.
+     +/
+    ULString ulCreateString(const(char*));
+
+    /++
+     + Create string from UTF-8 buffer.
+     +/
+    ULString ulCreateStringUTF8(const(char*), size_t);
+
+    /++
+     + Create string from UTF-16 buffer.
+     +/
+    ULString ulCreateStringUTF16(ULChar16*, size_t);
+
+    /++
+     + Create string from copy of existing string.
+     +/
+    ULString ulCreateStringFromCopy(ULString);
+
+    /++
+     + Destroy string (you should destroy any strings you explicitly Create).
+     +/
+    void ulDestroyString(ULString);
+
+    /++
+     + Get native UTF-8 buffer data (always null-terminated).
+     +/
+    char* ulStringGetData(ULString);
+
+    /++
+     + Get length (in bytes) of the UTF-8 buffer data, not including null terminator.
+     +/
+    size_t ulStringGetLength(ULString);
+
+    /++
+     + Whether this string is empty or not.
+     +/
+    bool ulStringIsEmpty(ULString);
+
+    /++
+     + Replaces the contents of 'str' with the contents of 'new_str'
+     +/
+    void ulStringAssignString(ULString, ULString);
+
+    /++
+     + Replaces the contents of 'str' with the contents of a C-string.
+     +/
+    void ulStringAssignCString(ULString, const(char*));
+
+
+
+
+
+    /++
+     + Bitmap
+     +/
+    
+    /++
+     + Create empty bitmap.
+     +/
+    ULBitmap ulCreateEmptyBitmap();
+
+    // TODO https://github.com/ultralight-ux/Ultralight-API/blob/master/Ultralight/CAPI/CAPI_Bitmap.h#L56
 }
