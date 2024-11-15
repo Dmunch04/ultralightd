@@ -2,27 +2,28 @@ module ultralightd.bindings.ultralight;
 
 import std.stdint;
 
-alias ULChar16 = wchar;
+public alias ULChar16 = wchar;
 //alias ULChar16 = ushort;
+public alias ULIndexType = uint;
 
-alias ULConfig = C_Config*;
-alias ULRenderer = C_Renderer*;
-alias ULSession = C_Session*;
-alias ULViewConfig = C_ViewConfig*;
-alias ULView = C_View*;
-alias ULBitmap = C_Bitmap*;
-alias ULString = C_String*;
-alias ULBuffer = C_Buffer*;
-alias ULKeyEvent = C_KeyEvent*;
-alias ULMouseEvent = C_MouseEvent*;
-alias ULScrollEvent = C_ScrollEvent*;
-alias ULGamepadEvent = C_GamepadEvent*;
-alias ULGamepadAxisEvent = C_GamepadAxisEvent*;
-alias ULGamepadButtonEvent = C_GamepadButtonEvent*;
-alias ULSurface = C_Surface*;
-alias ULBitmapSurface = C_Surface*;
-alias ULFontFile = C_FontFile*;
-alias ULImageSource = C_ImageSource*;
+public alias ULConfig = C_Config*;
+public alias ULRenderer = C_Renderer*;
+public alias ULSession = C_Session*;
+public alias ULViewConfig = C_ViewConfig*;
+public alias ULView = C_View*;
+public alias ULBitmap = C_Bitmap*;
+public alias ULString = C_String*;
+public alias ULBuffer = C_Buffer*;
+public alias ULKeyEvent = C_KeyEvent*;
+public alias ULMouseEvent = C_MouseEvent*;
+public alias ULScrollEvent = C_ScrollEvent*;
+public alias ULGamepadEvent = C_GamepadEvent*;
+public alias ULGamepadAxisEvent = C_GamepadAxisEvent*;
+public alias ULGamepadButtonEvent = C_GamepadButtonEvent*;
+public alias ULSurface = C_Surface*;
+public alias ULBitmapSurface = C_Surface*;
+public alias ULFontFile = C_FontFile*;
+public alias ULImageSource = C_ImageSource*;
 
 /++
  + Low-level bindings for the Ultralight C API.
@@ -1596,11 +1597,274 @@ public extern(C)
         kLogLevel_Info,
     }
 
+
+
+
+
+    /++
+     + GPU Driver
+     +/
+    
+    /++
+     + Render buffer description.
+     + This structure describes a render buffer that can be used as a target for drawing commands.
+     +/
+    struct ULRenderBuffer
+    {
+        /// The backing texture for this RenderBuffer
+        public uint texture_id;
+
+        /// The width of the RenderBuffer texture
+        public uint width;
+
+        /// The height of the RenderBuffer texture
+        public uint height;
+
+        /// Currently unused, always false.
+        public bool has_stencil_buffer;
+
+        /// Currently unsued, always false.
+        public bool has_depth_buffer;
+    }
+
+    /++
+     + Vertex layout for path vertices.
+     + This struct is the in-memory layout for each path vertex (useful for synthesizing or modifying
+     + your own vertex data).
+     +/
+    align(1) struct ULVertex_2f_4ub_2f
+    {
+        ///
+        public float[2] pos;
+
+        ///
+        public ubyte[4] color;
+
+        ///
+        public float[2] obj;
+
+    }
+
+    /++
+     + Vertex layout for quad vertices.
+     + This struct is the in-memory layout for each quad vertex (useful for synthesizing or modifying
+     + your own vertex data).
+     +/
+    align(1) struct ULVertex_2f_4ub_2f_2f_28f
+    {
+        ///
+        public float[2] pos;
+
+        ///
+        public ubyte[4] color;
+
+        ///
+        public float[2] tex;
+
+        ///
+        public float[2] obj;
+
+        ///
+        public float[4] data0;
+
+        ///
+        public float[4] data1;
+
+        ///
+        public float[4] data2;
+
+        ///
+        public float[4] data3;
+
+        ///
+        public float[4] data4;
+
+        ///
+        public float[4] data5;
+
+        ///
+        public float[4] data6;
+    }
+
+    /++
+     + Vertex buffer formats.
+     + This enumeration describes the format of a vertex buffer.
+     +/
+    enum ULVertexBufferFormat
+    {
+        /// Vertex_2f_4ub_2f (used for path rendering)
+        kVertexBufferFormat_2f_4ub_2f,
+
+        /// Vertex_2f_4ub_2f_2f_28f (used for quad rendering)
+        kVertexBufferFormat_2f_4ub_2f_2f_28f,
+    }
+
+    /++
+     + Vertex buffer description.
+     + @see ULGPUDriver::create_geometry
+     +/
+    struct ULVertexBuffer
+    {
+        /// The format of the vertex buffer.
+        public ULVertexBufferFormat format;
+
+        /// The size of the vertex buffer in bytes.
+        public uint size;
+
+        /// The raw vertex buffer data.
+        public ubyte* data;
+    }
+
+    /++
+     + Index buffer description.
+     + This structure describes an index buffer that can be used to index into a vertex buffer.
+     + @note The index buffer is a simple array of IndexType values.
+     +/
+    struct ULIndexBuffer
+    {
+        /// The size of the index buffer in bytes.
+        public uint size;
+
+        /// The raw index buffer data.
+        public ubyte* data;
+    }
+
+    /++
+     + Shader program types, used with ULGPUState::shader_type
+     + Each of these correspond to a vertex/pixel shader pair. You can find stock shader code for these
+     + in the `shaders` folder of the AppCore repo.
+     +/
+    enum ULShaderType
+    {
+        /// Shader program for filling quad geometry.
+        kShaderType_Fill,
+
+        /// Shader program for filling tesselated path geometry.
+        kShaderType_FillPath,
+    }
+
+    /++
+     + Raw 4x4 matrix as an array of floats in column-major order.
+     +/
+    struct ULMatrix4x4
+    {
+        ///
+        public float[16] data;
+    }
+
+    /++
+     + 4-component float vector
+     +/
+    struct ULvec4
+    {
+        ///
+        public float[4] value;
+    }
+
+    /++
+     + The state of the GPU for a given draw command.
+     + This structure describes the current state of the GPU for a given draw command.
+     +/
+    struct ULGPUState
+    {
+        /// Viewport width in pixels
+        public uint viewport_width;
+
+        /// Viewport height in pixels
+        public uint viewport_height;
+
+        /// Transform matrix-- you should multiply this with the screen-space orthographic projection
+        /// matrix then pass to the vertex shader.
+        public ULMatrix4x4 transform;
+
+        /// Whether or not we should enable texturing for the current draw command.
+        public bool enable_texturing;
+
+        /// Whether or not we should enable blending for the current draw command. If blending is
+        /// disabled, any drawn pixels should overwrite existing. Mainly used so we can modify alpha
+        /// values of the RenderBuffer during scissored clears.
+        public bool enable_blend;
+
+        /// The vertex/pixel shader program pair to use for the current draw command. You should cast this
+        /// to ShaderType to get the corresponding enum.
+        public ubyte shader_type;
+
+        /// The render buffer to use for the current draw command.
+        public uint render_buffer_id;
+
+        /// The texture id to bind to slot #1. (Will be 0 if none)
+        public uint texture_1_id;
+
+        /// The texture id to bind to slot #2. (Will be 0 if none)
+        public uint texture_2_id;
+
+        /// The texture id to bind to slot #3. (Will be 0 if none)
+        public uint texture_3_id;
+
+        /// The uniform scalars (passed to the pixel shader via uniforms).
+        public float[8] uniform_scalar;
+
+        /// The uniform vectors (passed to the pixel shader via uniforms).
+        public ULvec4[8] uniform_vector;
+
+        /// The clip size (passed to the pixel shader via uniforms).
+        public ubyte clip_size;
+
+        /// The clip stack (passed to the pixel shader via uniforms).
+        public ULMatrix4x4[8] clip;
+
+        /// Whether or not scissor testing should be used for the current draw command.
+        public bool enable_scissor;
+
+        /// The scissor rect to use for scissor testing (units in pixels)
+        public ULIntRect scissor_rect;
+    }
+
+    /++
+     + The types of commands.
+     + This enumeration describes the type of command to execute on the GPU. Used with
+     + ULCommand::command_type
+     +/
+    enum ULCommandType
+    {
+        /// Clear the specified render buffer.
+        kCommandType_ClearRenderBuffer,
+
+        /// Draw the specified geometry to the specified render buffer.
+        kCommandType_DrawGeometry,
+    }
+
+    /++
+     + A command to execute on the GPU.
+     + This structure describes a command to be executed on the GPU.
+     + Commands are dispatched to the GPU driver asynchronously via ULGPUDriver::update_command_list,
+     + the GPU driver should consume these commands and execute them at an appropriate time.
+     + @see ULCommandList
+     +/
+    struct ULCommand
+    {
+        /// The type of command to dispatch.
+        public ubyte command_type;
+
+        /// The current GPU state.
+        public ULGPUState gpu_state;
+
+        /// The geometry ID to bind. (used with kCommandType_DrawGeometry)
+        public uint geometry_id;
+        
+        /// The number of indices.   (used with kCommandType_DrawGeometry)
+        public uint indices_count;
+
+        /// The index to start from. (used with kCommandType_DrawGeometry)
+        public uint indices_offset;
+    }
+
+    // TODO https://github.com/ultralight-ux/Ultralight-API/blob/master/Ultralight/CAPI/CAPI_GPUDriver.h#L253
+
     // Buffer
     // Clipboard
     // FontFile
     // FontLoader
-    // GPUDriver
     // ImageSource
     // Platform
 }
