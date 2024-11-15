@@ -92,7 +92,7 @@ public extern(C)
     /++
      +
      +/
-    enum ULCurser
+    enum ULCursor
     {
         kCursor_Pointer = 0,
         kCursor_Cross,
@@ -301,7 +301,7 @@ public extern(C)
     /++
      +
      +/
-    struct RenderTarget
+    struct ULRenderTarget
     {
         ///
         public bool is_empty;
@@ -333,7 +333,7 @@ public extern(C)
 
     const(char*) ulVersionString();
 
-    uint ulVersionMahor();
+    uint ulVersionMajor();
 
     uint ulVersionMinor();
 
@@ -1595,4 +1595,12 @@ public extern(C)
         kLogLevel_Warning,
         kLogLevel_Info,
     }
+
+    // Buffer
+    // Clipboard
+    // FontFile
+    // FontLoader
+    // GPUDriver
+    // ImageSource
+    // Platform
 }

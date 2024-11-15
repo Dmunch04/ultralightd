@@ -1,16 +1,7 @@
 import std.stdio;
 import std.conv : to;
 
-public extern(C)
-{
-	const(char*) ulVersionString();
-
-	uint ulVersionMajor();
-
-	uint ulVersionMinor();
-
-	uint ulVersionPatch();
-}
+import ultralightd.bindings.ultralight;
 
 void main()
 {
