@@ -25,24 +25,6 @@ alias ULFontFile = C_FontFile*;
 alias ULImageSource = C_ImageSource*;
 
 /++
- + View
- +/
-
-alias ULChangeTitleCallback = void function(void*, ULView, ULString);
-alias ULChangeURLCallback = void function(void*, ULView, ULString);
-alias ULChangeTooltipCallback = void function(void*, ULView, ULString);
-alias ULChangeCurserCallback = void function(void*, ULView, ULCursor);
-alias ULAddConsoleMessageCallback = void function(void*, ULView, ULMessageSource, ULMessageLevel, ULString, uint, uint, ULString);
-alias ULCreateChildViewCallback = ULView function(void*, ULView, ULString, ULString, bool, ULIntRect);
-alias ULCreateInspectorViewCallback = ULView function(void*, ULView, bool, ULString);
-alias ULBeginLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
-alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
-alias ULFailLoadingCallback = void function(void*, ULView, ulong, bool, ULString, ULString, ULString, int);
-alias ULWindowObjectReadyCallback = void function(void*, ULView, ulong, bool, ULString);
-alias ULDOMReadyCallback = void function(void*, ULView, ulong, bool, ULString);
-alias ULUpdateHistoryCallback = void function(void*, ULView);
-
-/++
  + Low-level bindings for the Ultralight C API.
  + Source: https://github.com/ultralight-ux/Ultralight-API/blob/master/Ultralight/CAPI
  + Version as of time written: 1.4.0 (beta)
@@ -356,6 +338,117 @@ public extern(C)
     uint ulVersionMinor();
 
     uint ulVersionPatch();
+
+
+
+
+
+    /++
+     + View callbacks
+     +/
+
+    alias ULChangeTitleCallback = void function(void*, ULView, ULString);
+    alias ULChangeURLCallback = void function(void*, ULView, ULString);
+    alias ULChangeTooltipCallback = void function(void*, ULView, ULString);
+    alias ULChangeCurserCallback = void function(void*, ULView, ULCursor);
+    alias ULAddConsoleMessageCallback = void function(void*, ULView, ULMessageSource, ULMessageLevel, ULString, uint, uint, ULString);
+    alias ULCreateChildViewCallback = ULView function(void*, ULView, ULString, ULString, bool, ULIntRect);
+    alias ULCreateInspectorViewCallback = ULView function(void*, ULView, bool, ULString);
+    alias ULBeginLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+    alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+    alias ULFailLoadingCallback = void function(void*, ULView, ulong, bool, ULString, ULString, ULString, int);
+    alias ULWindowObjectReadyCallback = void function(void*, ULView, ulong, bool, ULString);
+    alias ULDOMReadyCallback = void function(void*, ULView, ulong, bool, ULString);
+    alias ULUpdateHistoryCallback = void function(void*, ULView);
+
+    /++
+     + Surface callbacks
+     +/
+    
+    alias ULSurfaceDefinitionCreateCallback = void* function(uint, uint);
+    alias ULSurfaceDefinitionDestroyCallback = void function(void*);
+    alias ULSurfaceDefinitionGetWidthCallback = uint function(void*);
+    alias ULSurfaceDefinitionGetHeightCallback = uint function(void*);
+    alias ULSurfaceDefinitionGetRowBytesCallback = uint function(void*);
+    alias ULSurfaceDefinitionGetSizeCallback = size_t function(void*);
+    alias ULSurfaceDefinitionLockPixelsCallback = void* function(void*);
+    alias ULSurfaceDefinitionUnlockPixelsCallback = void function(void*);
+    alias ULSurfaceDefinitionResizeCallback = void function(void*, uint, uint);
+
+    /++
+     + 
+     +/
+    struct ULSurfaceDefinition
+    {
+        ///
+        public ULSurfaceDefinitionCreateCallback create;
+
+        ///
+        public ULSurfaceDefinitionDestroyCallback destroy;
+
+        ///
+        public ULSurfaceDefinitionGetWidthCallback get_width;
+
+        ///
+        public ULSurfaceDefinitionGetHeightCallback get_height;
+
+        ///
+        public ULSurfaceDefinitionGetRowBytesCallback get_row_bytes;
+
+        ///
+        public ULSurfaceDefinitionGetSizeCallback get_size;
+
+        ///
+        public ULSurfaceDefinitionLockPixelsCallback lock_pixels;
+
+        ///
+        public ULSurfaceDefinitionUnlockPixelsCallback unlock_pixels;
+
+        ///
+        public ULSurfaceDefinitionResizeCallback resize;
+    }
+
+    /++
+     + Filesystem callbacks
+     +/
+    
+    alias ULFileSystemFileExistsCallback = bool function(ULString);
+    alias ULFileSystemGetFileMimeTypeCallback = ULString function(ULString);
+    alias ULFileSystemGetFileCharsetCallback = ULString function(ULString);
+    alias ULFileSystemOpenFileCallback = ULBuffer function(ULString);
+
+    /++
+     + 
+     +/
+    struct ULFileSystem
+    {
+        ///
+        public ULFileSystemFileExistsCallback file_exists;
+
+        ///
+        public ULFileSystemGetFileMimeTypeCallback get_file_mime_type;
+
+        ///
+        public ULFileSystemGetFileCharsetCallback get_file_charset;
+
+        ///
+        public ULFileSystemOpenFileCallback open_file;
+    }
+
+    /++
+     + Logger callbacks
+     +/
+    
+    alias ULLoggerLogMessageCallback = void function(ULLogLevel, ULString);
+
+    /++
+     + 
+     +/
+    struct ULLogger
+    {
+        ///
+        public ULLoggerLogMessageCallback log_message;
+    }
 
 
 
@@ -1167,5 +1260,339 @@ public extern(C)
      +/
     ULBitmap ulCreateEmptyBitmap();
 
-    // TODO https://github.com/ultralight-ux/Ultralight-API/blob/master/Ultralight/CAPI/CAPI_Bitmap.h#L56
+    /++
+     + Create bitmap with certain dimensions and pixel format.
+     +/
+    ULBitmap ulCreateBitmap(uint, uint, ULBitmapFormat);
+
+    /++
+     + Create bitmap from existing pixel buffer. @see Bitmap for help using this function.
+     + width, height, format, row_bytes, pixels, size, should_copy
+     +/
+    ULBitmap ulCreateBitmapFromPixels(uint, uint, ULBitmapFormat, uint, const(void*), size_t, bool);
+
+    /++
+     + Create bitmap from copy.
+     +/
+    ULBitmap ulCreateBitmapFromCopy(ULBitmap);
+
+    /++
+     + Destroy a bitmap (you should only destroy Bitmaps you have explicitly created via one of the
+     + creation functions above.
+     +/
+    void ulDestroyBitmap(ULBitmap);
+
+    /++
+     + Get the width in pixels.
+     +/
+    uint ulBitmapGetWidth(ULBitmap);
+
+    /++
+     + Get the height in pixels.
+     +/
+    uint ulBitmapGetHeight(ULBitmap);
+
+    /++
+     + Get the pixel format.
+     +/
+    ULBitmapFormat ulBitmapGetFormat(ULBitmap);
+
+    /++
+     + Get the bytes per pixel.
+     +/
+    uint ulBitmapGetBpp(ULBitmap);
+
+    /++
+     + Get the number of bytes per row.
+     +/
+    uint ulBitmapGetRowBytes(ULBitmap);
+
+    /++
+     + Get the size in bytes of the underlying pixel buffer.
+     +/
+    size_t ulBitmapGetSize(ULBitmap);
+
+    /++
+     + Whether or not this bitmap owns its own pixel buffer.
+     +/
+    bool ulBitmapOwnPixels(ULBitmap);
+
+    /++
+     + Lock pixels for reading/writing, returns pointer to pixel buffer.
+     +/
+    void* ulBitmapLockPixels(ULBitmap);
+
+    /++
+     + Unlock pixels after locking.
+     +/
+    void ulBitmapUnlockPixels(ULBitmap);
+
+    /++
+     + Get raw pixel buffer-- you should only call this if Bitmap is already locked.
+     +/
+    void* ulBitmapRawPixels(ULBitmap);
+
+    /++
+     + Whether or not this bitmap is empty.
+     +/
+    bool ulBitmapIsEmpty(ULBitmap);
+
+    /++
+     + Reset bitmap pixels to 0.
+     +/
+    void ulBitmapErase(ULBitmap);
+
+    /++
+     + Write bitmap to a PNG on disk.
+     +/
+    bool ulBitmapWritePNG(ULBitmap, const(char*)); 
+
+    /++
+     + This converts a BGRA bitmap to RGBA bitmap and vice-versa by swapping the red and blue channels.
+     +/
+    void ulBitmapSwapRedBlueChannels(ULBitmap);
+
+
+
+
+
+    /++
+     + Key Event
+     +/
+
+    /++
+     + Create a key event, see KeyEvent in the C++ API for help with the parameters.
+     +/
+    ULKeyEvent ulCreateKeyEvent(ULKeyEventType, uint, int, int, ULString, ULString, bool, bool, bool);
+
+    /++
+     + Create a key event from native Windows event.
+     +/
+    version(Windows) ULKeyEvent ulCreateKeyEventWindows(ULKeyEventType, uintptr_t, intptr_t, bool);
+
+    /++
+     + Create a key event from native macOS event.
+     +/
+    version(OSX) ULKeyEvent ulCreateKeyEventMacOS(NSEvent*);
+
+    /++
+     + Destroy a key event.
+     +/
+    void ulDestroyKeyEvent(ULKeyEvent);
+
+
+
+
+
+    /++
+     + Mouse Event
+     +/
+    
+    /++
+     + Create a mouse event, see MouseEvent in the C++ API for help using this function.
+     +/
+    ULMouseEvent ulCreateMouseEvent(ULMouseEventType, int, int, ULMouseButton);
+
+    /++
+     + Destroy a mouse event.
+     +/
+    void ulDestroyMouseEvent(ULMouseEvent);
+
+
+
+
+
+    /++
+     +  Scroll Event
+     +/
+
+    /++
+     + Create a scroll event, see ScrollEvent in the C++ API for help using this function.
+     +/
+    ULScrollEvent ulCreateScrollEvent(ULScrollEventType, int, int);
+
+    /++
+     + Destroy a scroll event.
+     +/
+    void ulDestroyScrollEvent(ULScrollEvent);
+
+
+
+
+
+    /++
+     + Gamepad Event
+     +/
+    
+    /++
+     + Create a gamepad event, see GamepadEvent for help using this function.
+     +/
+    ULGamepadEvent ulCreateGamepadEvent(uint, ULGamepadEventType);
+
+    /++
+     + Destroy a gamepad event.
+     +/
+    void ulDestroyGamepadEvent(ULGamepadEvent);
+
+    /++
+     + Create a gamepad axis event, see GamepadAxisEvent for help using this function.
+     +/
+    ULGamepadAxisEvent ulCreateGamepadAxisEvent(uint, uint, double);
+
+    /++
+     + Destroy a gamepad axis event.
+     +/
+    void ulDestroyGamepadAxisEvent(ULGamepadAxisEvent);
+
+    /++
+     + Create a gamepad button event, see GamepadButtonEvent for help using this function.
+     +/
+    ULGamepadButtonEvent ulCreateGamepadButtonEvent(uint, uint, double);
+
+    /++
+     + Destroy a gamepad button event.
+     +/
+    void ulDestroyGamepadButton(ULGamepadButtonEvent);
+
+
+
+
+
+    /++
+     + Geometry
+     +/
+    
+    /++
+     + Whether or not a ULRect is empty (all members equal to 0)
+     +/
+    bool ulRectIsEmpty(ULRect);
+
+    /++
+     + Create an empty ULRect (all members equal to 0)
+     +/
+    ULRect ulRectMakeEmpty();
+
+    /++
+     + Whether or not a ULIntRect is empty (all members equal to 0)
+     +/
+    bool ulIntRectIsEmpty(ULIntRect);
+
+    /++
+     + Create an empty ULIntRect (all members equal to 0)
+     +/
+    ULIntRect ulIntRectMakeEmpty();
+
+
+
+
+
+    /++
+     + Surface
+     +/
+    
+    /++
+     + Width (in pixels).
+     +/
+    uint ulSurfaceGetWidth(ULSurface);
+
+    /++
+     + Height (in pixels).
+     +/
+    uint ulSurfaceGetHeight(ULSurface);
+
+    /++
+     + Number of bytes between rows (usually width * 4)
+     +/
+    uint ulSurfaceGetRowBytes(ULSurface);
+
+    /++
+     + Size in bytes.
+     +/
+    size_t ulSurfaceGetSize(ULSurface);
+
+    /++
+     + Lock the pixel buffer and get a pointer to the beginning of the data for reading/writing.
+     + Native pixel format is premultiplied BGRA 32-bit (8 bits per channel).
+     +/
+    void* ulSurfaceLockPixels(ULSurface);
+
+    /++
+     + Unlock the pixel buffer.
+     +/
+    void ulSurfaceUnlockPixels(ULSurface);
+
+    /++
+     + Resize the pixel buffer to a certain width and height (both in pixels).
+     + This should never be called while pixels are locked.
+     +/
+    void ulSurfaceResize(ULSurface, uint, uint);
+
+    /++
+     + Set the dirty bounds to a certain value.
+     + This is called after the Renderer paints to an area of the pixel buffer. (The new value will be
+     + joined with the existing dirty_bounds())
+     +/
+    void ulSurfaceSetDirtyBounds(ULSurface, ULIntRect);
+
+    /++
+     + Get the dirty bounds.
+     + This value can be used to determine which portion of the pixel buffer has been updated since the
+     + last call to ulSurfaceClearDirtyBounds().
+     + The general algorithm to determine if a Surface needs display is:
+     + <pre>
+     +   if (!ulIntRectIsEmpty(ulSurfaceGetDirtyBounds(surface))) {
+     +       // Surface pixels are dirty and needs display.
+     +       // Cast Surface to native Surface and use it here (pseudo code)
+     +       DisplaySurface(surface);
+     +       // Once you're done, clear the dirty bounds:
+     +       ulSurfaceClearDirtyBounds(surface);
+     +   }
+     + </pre>
+     +/
+    ULIntRect ulSurfaceGetDirtyBounds(ULSurface);
+
+    /++
+     + Clear the dirty bounds.
+     + You should call this after you're done displaying the Surface.
+     +/
+    void ulSurfaceClearDirtyBounds(ULSurface);
+
+    /++
+     + Get the underlying user data pointer (this is only valid if you have set a custom surface
+     + implementation via ulPlatformSetSurfaceDefinition).
+     + This will return nullptr if this surface is the default ULBitmapSurface.
+     +/
+    void* ulSurfaceGetUserData(ULSurface);
+
+    /++
+     + Get the underlying Bitmap from the default Surface.
+     + @note  Do not call ulDestroyBitmap() on the returned value, it is owned by the surface.
+     +/
+    ULBitmap ulBitmapSurfaceGetBitmap(ULBitmapSurface);
+
+
+
+
+
+    /++
+     + File System
+     +/
+
+    
+
+
+
+    /++
+     + Logger
+     +/
+    
+    /++
+     + 
+     +/
+    enum ULLogLevel
+    {
+        kLogLevel_Error = 0,
+        kLogLevel_Warning,
+        kLogLevel_Info,
+    }
 }
