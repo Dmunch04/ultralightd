@@ -22,3 +22,8 @@ docs/
 
 # Code coverage
 *.lst
+
+assets/
+default/
+ultralight.log
+result.png

@@ -25,6 +25,8 @@ public alias ULBitmapSurface = C_Surface*;
 public alias ULFontFile = C_FontFile*;
 public alias ULImageSource = C_ImageSource*;
 
+alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+
 /++
  + Low-level bindings for the Ultralight C API.
  + Source: https://github.com/ultralight-ux/Ultralight-API/blob/master/Ultralight/CAPI
@@ -1238,7 +1240,7 @@ public extern(C)
     /++
      + 
      +/
-    alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+    //alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
 
     /++
      + Set callback for when the page finishes loading a URL into a frame.
