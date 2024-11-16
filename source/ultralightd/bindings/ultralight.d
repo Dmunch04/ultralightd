@@ -25,14 +25,421 @@ public alias ULBitmapSurface = C_Surface*;
 public alias ULFontFile = C_FontFile*;
 public alias ULImageSource = C_ImageSource*;
 
+
+
+
+
+/++
+ + View Callbacks
+ +/
+
+/++
+ + 
+ +/
+alias ULChangeTitleCallback = void function(void*, ULView, ULString);
+
+/++
+ + 
+ +/
+alias ULChangeURLCallback = void function(void*, ULView, ULString);
+
+/++
+ + 
+ +/
+alias ULChangeTooltipCallback = void function(void*, ULView, ULString);
+
+/++
+ + 
+ +/
+alias ULChangeCurserCallback = void function(void*, ULView, ULCursor);
+
+/++
+ + 
+ +/
+alias ULAddConsoleMessageCallback = void function(void*, ULView, ULMessageSource, ULMessageLevel, ULString, uint, uint, ULString);
+
+/++
+ + 
+ +/
+alias ULCreateChildViewCallback = ULView function(void*, ULView, ULString, ULString, bool, ULIntRect);
+
+/++
+ + 
+ +/
+alias ULCreateInspectorViewCallback = ULView function(void*, ULView, bool, ULString);
+
+/++
+ + 
+ +/
+alias ULBeginLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+
+/++
+ + 
+ +/
 alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
+
+/++
+ + 
+ +/
+alias ULFailLoadingCallback = void function(void*, ULView, ulong, bool, ULString, ULString, ULString, int);
+
+/++
+ + 
+ +/
+alias ULWindowObjectReadyCallback = void function(void*, ULView, ulong, bool, ULString);
+
+/++
+ + 
+ +/
+alias ULDOMReadyCallback = void function(void*, ULView, ulong, bool, ULString);
+
+/++
+ + 
+ +/
+alias ULUpdateHistoryCallback = void function(void*, ULView);
+
+
+
+
+
+/++
+ + Surface Callbacks
+ +/
+
+/++
+ + The callback invoked when a Surface is created.
+ + @param  width  The width in pixels.
+ + @param  height  The height in pixels.
+ + @return  This callback should return a pointer to user-defined data for the instance. This user
+ +          data pointer will be passed to all other callbacks when operating on the instance.
+ +/
+alias ULSurfaceDefinitionCreateCallback = void* function(uint, uint);
+
+/++
+ + The callback invoked when a Surface is destroyed.
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ +/
+alias ULSurfaceDefinitionDestroyCallback = void function(void*);
+
+/++
+ + The callback invoked when a Surface's width (in pixels) is requested.
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ +/
+alias ULSurfaceDefinitionGetWidthCallback = uint function(void*);
+
+/++
+ + The callback invoked when a Surface's height (in pixels) is requested.
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ +/
+alias ULSurfaceDefinitionGetHeightCallback = uint function(void*);
+
+/++
+ + The callback invoked when a Surface's row bytes is requested.
+ + @note  This value is also known as "stride". Usually width * 4.
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ +/
+alias ULSurfaceDefinitionGetRowBytesCallback = uint function(void*);
+
+/++
+ + The callback invoked when a Surface's size (in bytes) is requested.
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ +/
+alias ULSurfaceDefinitionGetSizeCallback = size_t function(void*);
+
+/++
+ + The callback invoked when a Surface's pixel buffer is requested to be locked for reading/writing
+ + (should return a pointer to locked bytes).
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ +/
+alias ULSurfaceDefinitionLockPixelsCallback = void* function(void*);
+
+/++
+ + The callback invoked when a Surface's pixel buffer is requested to be unlocked after previously
+ + being locked.
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ +/
+alias ULSurfaceDefinitionUnlockPixelsCallback = void function(void*);
+
+/++
+ + The callback invoked when a Surface is requested to be resized to a certain width/height.
+ + @param  user_data  User data pointer uniquely identifying the surface.
+ + @param  width      Width in pixels.
+ + @param  height     Height in pixels.
+ +/
+alias ULSurfaceDefinitionResizeCallback = void function(void*, uint, uint);
+
+
+
+
+/++
+ + File System Callbacks
+ +/
+
+/++
+ + The callback invoked when the FileSystem wants to check if a file path exists, return true if it
+ + exists.
+ +/
+alias ULFileSystemFileExistsCallback = bool function(ULString);
+
+/++
+ + Get the mime-type of the file (eg "text/html").
+ + This is usually determined by analyzing the file extension.
+ + If a mime-type cannot be determined, you should return "application/unknown" for this value.
+ + The library will consume the result and call ulDestroyString() after this call returns.
+ +/
+alias ULFileSystemGetFileMimeTypeCallback = ULString function(ULString);
+
+/++
+ + Get the charset / encoding of the file (eg "utf-8").
+ + This is only important for text-based files and is usually determined by analyzing the
+ + contents of the file.
+ + If a charset cannot be determined, it's usually safe to return "utf-8" for this value.
+ + The library will consume the result and call ulDestroyString() after this call returns.
+ +/
+alias ULFileSystemGetFileCharsetCallback = ULString function(ULString);
+
+/++
+ + Open file for reading and map it to a Buffer.
+ + To minimize copies, you should map the requested file into memory and use ulCreateBuffer()
+ + to wrap the data pointer (unmapping should be performed in the destruction callback).
+ + If the file was unable to be opened, you should return NULL for this value.
+ +/
+alias ULFileSystemOpenFileCallback = ULBuffer function(ULString);
+
+
+
+
+
+/++
+ + Logger Callbacks
+ +/
+
+/++
+ + The callback invoked when the library wants to print a message to the log.
+ +/
+alias ULLoggerLogMessageCallback = void function(ULLogLevel, ULString);
+
+
+
+
+
+/++
+ + GPU Driver Callbacks
+ +/
+
+/++
+ + Callback for users to implement ULGPUDriver::begin_synchronize.
+ + Called before any state (eg, create_texture(), update_texture(), destroy_texture(), etc.) is
+ + updated during a call to ulRender().
+ + This is a good time to prepare the GPU for any state updates.
+ +/
+alias ULGPUDriverBeginSynchronizeCallback = void function();
+
+/++
+ + Callback for users to implement ULGPUDriver::end_synchronize.
+ + Called after all state has been updated during a call to ulRender().
+ +/
+alias ULGPUDriverEndSynchronizeCallback = void function();
+
+/++
+ + Callback for users to implement ULGPUDriver::next_texture_id.
+ + Get the next available texture ID.
+ + This is used to generate a unique texture ID for each texture created by the library. The
+ + GPU driver implementation is responsible for mapping these IDs to a native ID.
+ + @note Numbering should start at 1, 0 is reserved for "no texture".
+ + @return Returns the next available texture ID.
+ +/
+alias ULGPUDriverNextTextureIdCallback = uint function();
+
+/++
+ + Callback for users to implement ULGPUDriver::create_texture.
+ + Create a texture with a certain ID and optional bitmap.
+ + @param texture_id  The texture ID to use for the new texture.
+ + @param bitmap      The bitmap to initialize the texture with (can be empty).
+ + @note If the Bitmap is empty (ulBitmapIsEmpty()), then a RTT Texture should be created instead.
+ +       This will be used as a backing texture for a new RenderBuffer.
+ + @warning A deep copy of the bitmap data should be made if you are uploading it to the GPU
+ +          asynchronously, it will not persist beyond this call.
+ +/
+alias ULGPUDriverCreateTextureCallback = void function(uint, ULBitmap);
+
+/++
+ + Callback for users to implement ULGPUDriver::update_texture.
+ + Update an existing non-RTT texture with new bitmap data.
+ + @param texture_id  The texture to update.
+ + @param bitmap      The new bitmap data.
+ + @warning A deep copy of the bitmap data should be made if you are uploading it to the GPU
+ +          asynchronously, it will not persist beyond this call.
+ +/
+alias ULGPUDriverUpdateTextureCallback = void function(uint, ULBitmap);
+
+/++
+ + Callback for users to implement ULGPUDriver::destroy_texture.
+ + Destroy a texture.
+ + @param texture_id  The texture to destroy.
+ +/
+alias ULGPUDriverDestroyTextureCallback = void function(uint);
+
+/++
+ + Callback for users to implement ULGPUDriver::next_render_buffer_id.
+ + Get the next available render buffer ID.
+ + This is used to generate a unique render buffer ID for each render buffer created by the
+ + library. The GPU driver implementation is responsible for mapping these IDs to a native ID.
+ + @note Numbering should start at 1, 0 is reserved for "no render buffer".
+ + @return Returns the next available render buffer ID.
+ +/
+alias ULGPUDriverNextRenderBufferIdCallback = uint function();
+
+/++
+ + Callback for users to implement ULGPUDriver::create_render_buffer.
+ + Create a render buffer with certain ID and buffer description.
+ + @param render_buffer_id  The render buffer ID to use for the new render buffer.
+ + @param buffer            The render buffer description.
+ +/
+alias ULGPUDriverCreateRenderBufferCallback = void function(uint, ULRenderBuffer);
+
+/++
+ + Callback for users to implement ULGPUDriver::destroy_render_buffer.
+ + Destroy a render buffer.
+ + @param render_buffer_id  The render buffer to destroy.
+ +/
+alias ULGPUDriverDestroyRenderBufferCallback = void function(uint);
+
+/++
+ + Callback for users to implement ULGPUDriver::next_geometry_id.
+ + Get the next available geometry ID.
+ + This is used to generate a unique geometry ID for each geometry created by the library. The
+ + GPU driver implementation is responsible for mapping these IDs to a native ID.
+ + @note Numbering should start at 1, 0 is reserved for "no geometry".
+ + @return Returns the next available geometry ID.
+ +/
+alias ULGPUDriverNextGeometryIdCallback = uint function();
+
+/++
+ + Callback for users to implement ULGPUDriver::create_geometry.
+ + Create geometry with certain ID and vertex/index data.
+ + @param geometry_id  The geometry ID to use for the new geometry.
+ + @param vertices     The vertex buffer data.
+ + @param indices      The index buffer data.
+ + @warning A deep copy of the vertex/index data should be made if you are uploading it to the
+ +          GPU asynchronously, it will not persist beyond this call.
+ +/
+alias ULGPUDriverCreateGeometryCallback = void function(uint, ULVertexBuffer, ULIndexBuffer);
+
+/++
+ + Callback for users to implement ULGPUDriver::update_geometry.
+ + Update existing geometry with new vertex/index data.
+ + @param geometry_id  The geometry to update.
+ + @param vertices     The new vertex buffer data.
+ + @param indices      The new index buffer data.
+ + @warning A deep copy of the vertex/index data should be made if you are uploading it to the
+ +          GPU asynchronously, it will not persist beyond this call.
+ +/
+alias ULGPUDriverUpdateGeometryCallback = void function(uint, ULVertexBuffer, ULIndexBuffer);
+
+/++
+ + Callback for users to implement ULGPUDriver::destroy_geometry.
+ + Destroy geometry.
+ + @param geometry_id  The geometry to destroy.
+ +/
+alias ULGPUDriverDestroyGeometryCallback = void function(uint);
+
+/++
+ + Callback for users to implement ULGPUDriver::update_command_list.
+ + Update the pending command list with commands to execute on the GPU.
+ + Commands are dispatched to the GPU driver asynchronously via this method. The GPU driver
+ + implementation should consume these commands and execute them at an appropriate time.
+ + @param list  The list of commands to execute.
+ + @warning Implementations should make a deep copy of the command list, it will not persist
+ +          beyond this call.
+ +/
+alias ULGPUDriverUpdateCommandListCallback = void function(ULCommandList);
+
+
+
+
+
+/++
+ + Clipboard Callbacks
+ +/
+
+/++
+ + The callback invoked when the library wants to clear the system's clipboard.
+ +/
+alias ULClipboardClearCallback = void function();
+
+/++
+ + The callback invoked when the library wants to read from the system's clipboard.
+ + You should store the result (if any) in 'result'.
+ +/
+alias ULClipboardReadPlainTextCallback = void function(ULString);
+
+/++
+ + The callback invoked when the library wants to write to the system's clipboard.
+ +/
+alias ULClipboardWritePlainTextCallback = void function(ULString);
+
+
+
+
+
+/++
+ + Buffer Callbacks
+ +/
+
+/++
+ + 
+ +/
+alias ulDestroyBufferCallback = void function(void*, void*);
+
+
+
+
+
+/++
+ + Font Loader Callbacks
+ +/
+
+/++
+ + Fallback font family name. Will be used if all other fonts fail to load.
+ + @note  This font should be guaranteed to exist (eg, ULFontLoader::load should not fail when
+ +        when passed this font family name).
+ + @note  The returned ULString instance will be consumed (ulDestroyString will be called on it).
+ +/
+alias ULFontLoaderGetFallbackFont = ULString function();
+
+/++
+ + Fallback font family name that can render the specified characters. This is mainly used to
+ + support CJK (Chinese, Japanese, Korean) text display.
+ + @param  characters  One or more UTF-16 characters. This is almost always a single character.
+ + @param  weight      Font weight.
+ + @param  italic      Whether or not italic is requested.
+ + @return  Should return a font family name that can render the text. The returned ULString
+ +          instance will be consumed (ulDestroyString will be called on it).
+ +/
+alias ULFontLoaderGetFallbackFontForCharacters = ULString function(ULString, int, bool);
+
+/++
+ + Get the actual font file data (TTF/OTF) for a given font description.
+ + @param  family  Font family name.
+ + @param  weight  Font weight.
+ + @param  italic  Whether or not italic is requested.
+ + @return  A font file matching the given description (either an on-disk font filepath or an
+ +          in-memory file buffer). You can return NULL here and the loader will fallback to
+ +          another font.
+ +/
+alias ULFontLoaderLoad = ULFontFile function(ULString, int, bool);
+
+
+
+
 
 /++
  + Low-level bindings for the Ultralight C API.
  + Source: https://github.com/ultralight-ux/Ultralight-API/blob/master/Ultralight/CAPI
  + Version as of time written: 1.4.0 (beta)
  +/
-public extern(C)
+public extern(C) nothrow
 {
     /++
      + Defines
@@ -1150,19 +1557,9 @@ public extern(C)
     void ulViewFireScrollEvent(ULView, ULScrollEvent);
 
     /++
-     + 
-     +/
-    alias ULChangeTitleCallback = void function(void*, ULView, ULString);
-
-    /++
      + Set callback for when the page title changes.
      +/
     void ulViewSetChangeTitleCallback(ULView, ULChangeTitleCallback, void*);
-
-    /++
-     + 
-     +/
-    alias ULChangeURLCallback = void function(void*, ULView, ULString);
 
     /++
      + Set callback for when the page URL changes.
@@ -1170,19 +1567,9 @@ public extern(C)
     void ulViewSetChangeURLCallback(ULView, ULChangeURLCallback, void*);
 
     /++
-     + 
-     +/
-    alias ULChangeTooltipCallback = void function(void*, ULView, ULString);
-
-    /++
      + Set callback for when the tooltip changes (usually result of a mouse hover).
      +/
     void ulViewSetChangeTooltipCallback(ULView, ULChangeTooltipCallback, void*);
-
-    /++
-     + 
-     +/
-    alias ULChangeCurserCallback = void function(void*, ULView, ULCursor);
 
     /++
      + Set callback for when the mouse cursor changes.
@@ -1190,20 +1577,10 @@ public extern(C)
     void ulViewSetChangeCursorCallback(ULView, ULChangeCurserCallback, void*);
 
     /++
-     + 
-     +/
-    alias ULAddConsoleMessageCallback = void function(void*, ULView, ULMessageSource, ULMessageLevel, ULString, uint, uint, ULString);
-
-    /++
      + Set callback for when a message is added to the console (useful for JavaScript / network errors
      + and debugging).
      +/
     void ulViewSetAddConsoleMessageCallback(ULView, ULAddConsoleMessageCallback, void*);
-
-    /++
-     + 
-     +/
-    alias ULCreateChildViewCallback = ULView function(void*, ULView, ULString, ULString, bool, ULIntRect);
 
     /++
      + Set callback for when the page wants to create a new View.
@@ -1216,11 +1593,6 @@ public extern(C)
     void ulViewSetCreateChildViewCallback(ULView, ULCreateChildViewCallback, void*);
 
     /++
-     + 
-     +/
-    alias ULCreateInspectorViewCallback = ULView function(void*, ULView, bool, ULString);
-
-    /++
      + Set callback for when the page wants to create a new View to display the local inspector in.
      + You should create a new View in this callback, resize it to your
      + container, and return it. You are responsible for displaying the returned View.
@@ -1228,19 +1600,9 @@ public extern(C)
     void ulViewSetCreateInspectorViewCallback(ULView, ULCreateInspectorViewCallback, void*);
 
     /++
-     + 
-     +/
-    alias ULBeginLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
-
-    /++
      + Set callback for when the page begins loading a new URL into a frame.
      +/
     void ulViewSetBeginLoadingCallback(ULView, ULBeginLoadingCallback, void*);
-
-    /++
-     + 
-     +/
-    //alias ULFinishLoadingCallback = void function(void*, ULView, ulong, bool, ULString);
 
     /++
      + Set callback for when the page finishes loading a URL into a frame.
@@ -1248,19 +1610,9 @@ public extern(C)
     void ulViewSetFinishLoadingCallback(ULView, ULFinishLoadingCallback, void*);
 
     /++
-     + 
-     +/
-    alias ULFailLoadingCallback = void function(void*, ULView, ulong, bool, ULString, ULString, ULString, int);
-
-    /++
      + Set callback for when an error occurs while loading a URL into a frame.
      +/
     void ulViewSetFailLoadingCallback(ULView, ULFailLoadingCallback, void*);
-
-    /++
-     + 
-     +/
-    alias ULWindowObjectReadyCallback = void function(void*, ULView, ulong, bool, ULString);
 
     /++
      + Set callback for when the JavaScript window object is reset for a new page load.
@@ -1274,21 +1626,11 @@ public extern(C)
     void ulViewSetWindowObjectReadyCallback(ULView, ULWindowObjectReadyCallback, void*);
 
     /++
-     + 
-     +/
-    alias ULDOMReadyCallback = void function(void*, ULView, ulong, bool, ULString);
-
-    /++
      + Set callback for when all JavaScript has been parsed and the document is ready.
      + This is the best time to make any JavaScript calls that are dependent on DOM elements or scripts
      + on the page.
      +/
     void ulViewSetDOMReadyCallback(ULView, ULDOMReadyCallback, void*);
-
-    /++
-     + 
-     +/
-    alias ULUpdateHistoryCallback = void function(void*, ULView);
 
     /++
      + Set callback for when the history (back/forward state) is modified.
@@ -1699,68 +2041,6 @@ public extern(C)
     ULBitmap ulBitmapSurfaceGetBitmap(ULBitmapSurface);
 
     /++
-     + The callback invoked when a Surface is created.
-     + @param  width  The width in pixels.
-     + @param  height  The height in pixels.
-     + @return  This callback should return a pointer to user-defined data for the instance. This user
-     +          data pointer will be passed to all other callbacks when operating on the instance.
-     +/
-    alias ULSurfaceDefinitionCreateCallback = void* function(uint, uint);
-
-    /++
-     + The callback invoked when a Surface is destroyed.
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     +/
-    alias ULSurfaceDefinitionDestroyCallback = void function(void*);
-
-    /++
-     + The callback invoked when a Surface's width (in pixels) is requested.
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     +/
-    alias ULSurfaceDefinitionGetWidthCallback = uint function(void*);
-
-    /++
-     + The callback invoked when a Surface's height (in pixels) is requested.
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     +/
-    alias ULSurfaceDefinitionGetHeightCallback = uint function(void*);
-
-    /++
-     + The callback invoked when a Surface's row bytes is requested.
-     + @note  This value is also known as "stride". Usually width * 4.
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     +/
-    alias ULSurfaceDefinitionGetRowBytesCallback = uint function(void*);
-
-    /++
-     + The callback invoked when a Surface's size (in bytes) is requested.
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     +/
-    alias ULSurfaceDefinitionGetSizeCallback = size_t function(void*);
-
-    /++
-     + The callback invoked when a Surface's pixel buffer is requested to be locked for reading/writing
-     + (should return a pointer to locked bytes).
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     +/
-    alias ULSurfaceDefinitionLockPixelsCallback = void* function(void*);
-
-    /++
-     + The callback invoked when a Surface's pixel buffer is requested to be unlocked after previously
-     + being locked.
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     +/
-    alias ULSurfaceDefinitionUnlockPixelsCallback = void function(void*);
-
-    /++
-     + The callback invoked when a Surface is requested to be resized to a certain width/height.
-     + @param  user_data  User data pointer uniquely identifying the surface.
-     + @param  width      Width in pixels.
-     + @param  height     Height in pixels.
-     +/
-    alias ULSurfaceDefinitionResizeCallback = void function(void*, uint, uint);
-
-    /++
      + User-defined surface interface.
      + You should implement each of these callbacks, then pass an instance of this struct containing
      + your callbacks to ulPlatformSetSurfaceDefinition().
@@ -1802,37 +2082,6 @@ public extern(C)
     /++
      + File System
      +/
-    
-    /++
-     + The callback invoked when the FileSystem wants to check if a file path exists, return true if it
-     + exists.
-     +/
-    alias ULFileSystemFileExistsCallback = bool function(ULString);
-
-    /++
-     + Get the mime-type of the file (eg "text/html").
-     + This is usually determined by analyzing the file extension.
-     + If a mime-type cannot be determined, you should return "application/unknown" for this value.
-     + The library will consume the result and call ulDestroyString() after this call returns.
-     +/
-    alias ULFileSystemGetFileMimeTypeCallback = ULString function(ULString);
-
-    /++
-     + Get the charset / encoding of the file (eg "utf-8").
-     + This is only important for text-based files and is usually determined by analyzing the
-     + contents of the file.
-     + If a charset cannot be determined, it's usually safe to return "utf-8" for this value.
-     + The library will consume the result and call ulDestroyString() after this call returns.
-     +/
-    alias ULFileSystemGetFileCharsetCallback = ULString function(ULString);
-
-    /++
-     + Open file for reading and map it to a Buffer.
-     + To minimize copies, you should map the requested file into memory and use ulCreateBuffer()
-     + to wrap the data pointer (unmapping should be performed in the destruction callback).
-     + If the file was unable to be opened, you should return NULL for this value.
-     +/
-    alias ULFileSystemOpenFileCallback = ULBuffer function(ULString);
 
     /++
      + User-defined file system interface.
@@ -1876,11 +2125,6 @@ public extern(C)
         /// 
         kLogLevel_Info,
     }
-
-    /++
-     + The callback invoked when the library wants to print a message to the log.
-     +/
-    alias ULLoggerLogMessageCallback = void function(ULLogLevel, ULString);
 
     /++
      + 
@@ -2166,134 +2410,6 @@ public extern(C)
         public ULCommand* commands;
     }
 
-    /++
-     + Callback for users to implement ULGPUDriver::begin_synchronize.
-     + Called before any state (eg, create_texture(), update_texture(), destroy_texture(), etc.) is
-     + updated during a call to ulRender().
-     + This is a good time to prepare the GPU for any state updates.
-     +/
-    alias ULGPUDriverBeginSynchronizeCallback = void function();
-
-    /++
-     + Callback for users to implement ULGPUDriver::end_synchronize.
-     + Called after all state has been updated during a call to ulRender().
-     +/
-    alias ULGPUDriverEndSynchronizeCallback = void function();
-
-    /++
-     + Callback for users to implement ULGPUDriver::next_texture_id.
-     + Get the next available texture ID.
-     + This is used to generate a unique texture ID for each texture created by the library. The
-     + GPU driver implementation is responsible for mapping these IDs to a native ID.
-     + @note Numbering should start at 1, 0 is reserved for "no texture".
-     + @return Returns the next available texture ID.
-     +/
-    alias ULGPUDriverNextTextureIdCallback = uint function();
-
-    /++
-     + Callback for users to implement ULGPUDriver::create_texture.
-     + Create a texture with a certain ID and optional bitmap.
-     + @param texture_id  The texture ID to use for the new texture.
-     + @param bitmap      The bitmap to initialize the texture with (can be empty).
-     + @note If the Bitmap is empty (ulBitmapIsEmpty()), then a RTT Texture should be created instead.
-     +       This will be used as a backing texture for a new RenderBuffer.
-     + @warning A deep copy of the bitmap data should be made if you are uploading it to the GPU
-     +          asynchronously, it will not persist beyond this call.
-     +/
-    alias ULGPUDriverCreateTextureCallback = void function(uint, ULBitmap);
-
-    /++
-     + Callback for users to implement ULGPUDriver::update_texture.
-     + Update an existing non-RTT texture with new bitmap data.
-     + @param texture_id  The texture to update.
-     + @param bitmap      The new bitmap data.
-     + @warning A deep copy of the bitmap data should be made if you are uploading it to the GPU
-     +          asynchronously, it will not persist beyond this call.
-     +/
-    alias ULGPUDriverUpdateTextureCallback = void function(uint, ULBitmap);
-
-    /++
-     + Callback for users to implement ULGPUDriver::destroy_texture.
-     + Destroy a texture.
-     + @param texture_id  The texture to destroy.
-     +/
-    alias ULGPUDriverDestroyTextureCallback = void function(uint);
-
-    /++
-     + Callback for users to implement ULGPUDriver::next_render_buffer_id.
-     + Get the next available render buffer ID.
-     + This is used to generate a unique render buffer ID for each render buffer created by the
-     + library. The GPU driver implementation is responsible for mapping these IDs to a native ID.
-     + @note Numbering should start at 1, 0 is reserved for "no render buffer".
-     + @return Returns the next available render buffer ID.
-     +/
-    alias ULGPUDriverNextRenderBufferIdCallback = uint function();
-
-    /++
-     + Callback for users to implement ULGPUDriver::create_render_buffer.
-     + Create a render buffer with certain ID and buffer description.
-     + @param render_buffer_id  The render buffer ID to use for the new render buffer.
-     + @param buffer            The render buffer description.
-     +/
-    alias ULGPUDriverCreateRenderBufferCallback = void function(uint, ULRenderBuffer);
-
-    /++
-     + Callback for users to implement ULGPUDriver::destroy_render_buffer.
-     + Destroy a render buffer.
-     + @param render_buffer_id  The render buffer to destroy.
-     +/
-    alias ULGPUDriverDestroyRenderBufferCallback = void function(uint);
-
-    /++
-     + Callback for users to implement ULGPUDriver::next_geometry_id.
-     + Get the next available geometry ID.
-     + This is used to generate a unique geometry ID for each geometry created by the library. The
-     + GPU driver implementation is responsible for mapping these IDs to a native ID.
-     + @note Numbering should start at 1, 0 is reserved for "no geometry".
-     + @return Returns the next available geometry ID.
-     +/
-    alias ULGPUDriverNextGeometryIdCallback = uint function();
-
-    /++
-     + Callback for users to implement ULGPUDriver::create_geometry.
-     + Create geometry with certain ID and vertex/index data.
-     + @param geometry_id  The geometry ID to use for the new geometry.
-     + @param vertices     The vertex buffer data.
-     + @param indices      The index buffer data.
-     + @warning A deep copy of the vertex/index data should be made if you are uploading it to the
-     +          GPU asynchronously, it will not persist beyond this call.
-     +/
-    alias ULGPUDriverCreateGeometryCallback = void function(uint, ULVertexBuffer, ULIndexBuffer);
-
-    /++
-     + Callback for users to implement ULGPUDriver::update_geometry.
-     + Update existing geometry with new vertex/index data.
-     + @param geometry_id  The geometry to update.
-     + @param vertices     The new vertex buffer data.
-     + @param indices      The new index buffer data.
-     + @warning A deep copy of the vertex/index data should be made if you are uploading it to the
-     +          GPU asynchronously, it will not persist beyond this call.
-     +/
-    alias ULGPUDriverUpdateGeometryCallback = void function(uint, ULVertexBuffer, ULIndexBuffer);
-
-    /++
-     + Callback for users to implement ULGPUDriver::destroy_geometry.
-     + Destroy geometry.
-     + @param geometry_id  The geometry to destroy.
-     +/
-    alias ULGPUDriverDestroyGeometryCallback = void function(uint);
-
-    /++
-     + Callback for users to implement ULGPUDriver::update_command_list.
-     + Update the pending command list with commands to execute on the GPU.
-     + Commands are dispatched to the GPU driver asynchronously via this method. The GPU driver
-     + implementation should consume these commands and execute them at an appropriate time.
-     + @param list  The list of commands to execute.
-     + @warning Implementations should make a deep copy of the command list, it will not persist
-     +          beyond this call.
-     +/
-    alias ULGPUDriverUpdateCommandListCallback = void function(ULCommandList);
-
     struct ULGPUDriver
     {
         /// 
@@ -2358,22 +2474,6 @@ public extern(C)
      +/
 
     /++
-     + The callback invoked when the library wants to clear the system's clipboard.
-     +/
-    alias ULClipboardClearCallback = void function();
-
-    /++
-     + The callback invoked when the library wants to read from the system's clipboard.
-     + You should store the result (if any) in 'result'.
-     +/
-    alias ULClipboardReadPlainTextCallback = void function(ULString);
-
-    /++
-     + The callback invoked when the library wants to write to the system's clipboard.
-     +/
-    alias ULClipboardWritePlainTextCallback = void function(ULString);
-
-    /++
      + User-defined clipboard interface.
      + You should implement each of these callbacks, then pass an instance of this struct containing
      + your callbacks to ulPlatformSetClipboard().
@@ -2397,8 +2497,6 @@ public extern(C)
     /++
      + Buffer
      +/
-
-    alias ulDestroyBufferCallback = void function(void*, void*);
 
     /++
      + Create a Buffer from existing, user-owned data without any copies. An optional, user-supplied
@@ -2475,36 +2573,6 @@ public extern(C)
     /++
      + Font Loader
      +/
-    
-    /++
-     + Fallback font family name. Will be used if all other fonts fail to load.
-     + @note  This font should be guaranteed to exist (eg, ULFontLoader::load should not fail when
-     +        when passed this font family name).
-     + @note  The returned ULString instance will be consumed (ulDestroyString will be called on it).
-     +/
-    alias ULFontLoaderGetFallbackFont = ULString function();
-
-    /++
-     + Fallback font family name that can render the specified characters. This is mainly used to
-     + support CJK (Chinese, Japanese, Korean) text display.
-     + @param  characters  One or more UTF-16 characters. This is almost always a single character.
-     + @param  weight      Font weight.
-     + @param  italic      Whether or not italic is requested.
-     + @return  Should return a font family name that can render the text. The returned ULString
-     +          instance will be consumed (ulDestroyString will be called on it).
-     +/
-    alias ULFontLoaderGetFallbackFontForCharacters = ULString function(ULString, int, bool);
-
-    /++
-     + Get the actual font file data (TTF/OTF) for a given font description.
-     + @param  family  Font family name.
-     + @param  weight  Font weight.
-     + @param  italic  Whether or not italic is requested.
-     + @return  A font file matching the given description (either an on-disk font filepath or an
-     +          in-memory file buffer). You can return NULL here and the loader will fallback to
-     +          another font.
-     +/
-    alias ULFontLoaderLoad = ULFontFile function(ULString, int, bool);
 
     /++
      + User-defined font loader interface.

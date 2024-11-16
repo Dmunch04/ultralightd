@@ -8,6 +8,40 @@ public alias ULWindow = C_Window*;
 public alias ULMonitor = C_Monitor*;
 public alias ULOverlay = C_Overlay*;
 
+
+
+
+
+/++
+ + App Callbacks
+ +/
+
+/++
+ + 
+ +/
+alias ULUpdateCallback = void function(void*);
+
+
+
+
+/++
+ + Window Callbacks
+ +/
+
+/++
+ + 
+ +/
+alias ULCloseCallback = void function(void*, ULWindow);
+
+/++
+ + 
+ +/
+alias ULResizeCallback = void function(void*, ULWindow, uint, uint);
+
+
+
+
+
 /++
  + Low-level bindings for the Ultralight AppCore C API.
  + Source: https://github.com/ultralight-ux/Ultralight-API/blob/master/AppCore/CAPI.h
@@ -128,11 +162,6 @@ public extern(C)
     void ulDestroyApp(ULApp);
 
     /++
-     + 
-     +/
-    alias ULUpdateCallback = void function(void*);
-
-    /++
      + Set a callback for whenever the App updates. You should update all app
      + logic here.
      + @note  This event is fired right before the run loop calls
@@ -213,19 +242,9 @@ public extern(C)
     void ulDestroyWindow(ULWindow);
 
     /++
-     + 
-     +/
-    alias ULCloseCallback = void function(void*, ULWindow);
-
-    /++
      + Set a callback to be notified when a window closes.
      +/
     void ulWindowSetCloseCallback(ULWindow, ULCloseCallback, void*);
-
-    /++
-     + 
-     +/
-    alias ULResizeCallback = void function(void*, ULWindow, uint, uint);
 
     /++
      + Set a callback to be notified when a window resizes
