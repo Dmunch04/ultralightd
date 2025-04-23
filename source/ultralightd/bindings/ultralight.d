@@ -2,8 +2,8 @@ module ultralightd.bindings.ultralight;
 
 import std.stdint;
 
-public alias ULChar16 = wchar;
-//alias ULChar16 = ushort;
+//public alias ULChar16 = wchar;
+public alias ULChar16 = ushort;
 public alias ULIndexType = uint;
 
 public alias ULConfig = C_Config*;

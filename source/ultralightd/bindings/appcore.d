@@ -47,7 +47,7 @@ alias ULResizeCallback = extern(C) void function(void*, ULWindow, uint, uint);
  + Source: https://github.com/ultralight-ux/Ultralight-API/blob/master/AppCore/CAPI.h
  + Version as of time written: 1.4.0 (beta)
  +/
-public extern(C)
+public extern(C) nothrow @safe
 {
     struct C_Settings;
     struct C_App;
