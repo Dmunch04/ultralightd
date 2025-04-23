@@ -19,6 +19,17 @@ extern(C) void onResize(void* userData, ULWindow window, uint width, uint height
 
 void main()
 {
+    auto cstr2dstr(inout(char)* cstr)
+    {
+        import core.stdc.string : strlen;
+        return cstr ? cstr[0 .. strlen(cstr)] : "";
+    }
+
+    ULString str = ulCreateString("Hello, World!");
+    char* cstr = ulStringGetData(str);
+    
+    writeln(cstr2dstr(cstr));
+
 	ULString baseFSPath = ulCreateString("./");
 	ulEnablePlatformFileSystem(baseFSPath);
 	ulDestroyString(baseFSPath);
