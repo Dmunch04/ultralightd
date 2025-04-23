@@ -1,71 +1,155 @@
 import std.stdio;
-import std.conv : to;
 import core.thread;
 
-import ultralightd.bindings.ultralight;
-import ultralightd.bindings.appcore;
+import ultralightd.bindings;
 
-bool done = false;
+ULApp app;
+ULOverlay overlay;
+ULView view;
 
-void onFinishLoading(void* userData, ULView caller, ulong frameId, bool isMainFrame, ULString url)
+extern(C) void onClose(void* userData, ULWindow window)
 {
-	if (isMainFrame)
-	{
-		writeln("Our page has loaded!");
-		done = true;
-	}
+	ulAppQuit(app);
+}
+
+extern(C) void onResize(void* userData, ULWindow window, uint width, uint height)
+{
+	ulOverlayResize(overlay, width, height);
 }
 
 void main()
 {
-	writeln(ulVersionString().to!string);
-	writeln(ulVersionMajor().to!string ~ "." ~ ulVersionMinor().to!string ~ "." ~ ulVersionPatch().to!string);
+	ULString baseFSPath = ulCreateString("./");
+	ulEnablePlatformFileSystem(baseFSPath);
+	ulDestroyString(baseFSPath);
 
+	ULSettings settings = ulCreateSettings();
+	ulSettingsSetForceCPURenderer(settings, true);
 	ULConfig config = ulCreateConfig();
-	ulEnablePlatformFontLoader();
 
-	//ULString resourcesPath = ulCreateString("./build/resources/");
-	//ulConfigSetResourcePathPrefix(config, resourcesPath);
-	//ulDestroyString(resourcesPath);
+	app = ulCreateApp(settings, config);
 
-	ULString baseDir = ulCreateString("./");
-	ulEnablePlatformFileSystem(baseDir);
-	ulDestroyString(baseDir);
-
-	ULString logPath = ulCreateString("./ultralight.log");
-	ulEnableDefaultLogger(logPath);
-	ulDestroyString(logPath);
-
-	ULRenderer renderer = ulCreateRenderer(config);
+	ulDestroySettings(settings);
 	ulDestroyConfig(config);
 
-	ULViewConfig viewConfig = ulCreateViewConfig();
-	ulViewConfigSetInitialDeviceScale(viewConfig, 2.0);
-	ulViewConfigSetIsAccelerated(viewConfig, false);
+	ULWindow window = ulCreateWindow(ulAppGetMainMonitor(app), 512, 512, false, ULWindowFlags.kWindowFlags_Resizable);
+	ulWindowSetTitle(window, "Example");
 
-	ULView view = ulCreateView(renderer, 1600, 800, viewConfig, null);
-	ulDestroyViewConfig(viewConfig);
+	overlay = ulCreateOverlay(window, ulWindowGetWidth(window), ulWindowGetHeight(window), 0, 0);
+	view = ulOverlayGetView(overlay);
 
-	ulViewSetFinishLoadingCallback(view, &onFinishLoading, null);
+	//ulWindowSetResizeCallback(window, &onResize, null);
+	//ulWindowSetCloseCallback(window, &onClose, null);
+	
+	//ulWindowSetResizeCallback(window, externify!ULResizeCallback((void* userData, ULWindow window, uint width, uint height) { ulOverlayResize(overlay, width, height); }), null);
+	//ulWindowSetResizeCallback(window, resize((void* userData, ULWindow window, uint w, uint h) { ulOverlayResize(overlay, w, h); }), null);
+	//ulWindowSetCloseCallback(window, externify!ULCloseCallback((void* userData, ULWindow window) { ulAppQuit(app); }), null);
+    
+    ulWindowSetResizeCallback(
+        window,
+        lambda!((void* userData, ULWindow window, uint width, uint height) {
+            ulOverlayResize(overlay, width, height);
+        }),
+        null
+    );
+    
+    ulWindowSetCloseCallback(
+        window,
+        lambda!((void* userData, ULWindow window) {
+            ulAppQuit(app);
+        }),
+        null
+    );
+	
+	ULString url = ulCreateString("https://ultralig.ht/");
+	ulViewLoadURL(view, url);
+	ulDestroyString(url);
 
-	ULString urlString = ulCreateString("file:///assets/page.html");
-	//ULString urlString = ulCreateString("https://google.com");
-	ulViewLoadURL(view, urlString);
-	ulDestroyString(urlString);
+	ulAppRun(app);
 
-	writeln("Starting Run(), waiting for page to load...");
-
-	do {
-		ulUpdate(renderer);
-		Thread.sleep(dur!("msecs")(10));
-	} while (!done);
-
-	ulRender(renderer);
-
-	ULSurface surface = ulViewGetSurface(view);
-
-	ULBitmap bitmap = ulBitmapSurfaceGetBitmap(surface);
-
-	ulBitmapWritePNG(bitmap, "result.png");
-	writeln("Saved a render of our page to result.png.");
+	ulDestroyOverlay(overlay);
+	ulDestroyWindow(window);
+	ulDestroyApp(app);
 }
+
+
+/*
+ULApp app;
+ULWindow window;
+ULOverlay overlay;
+ULView view;
+
+void onUpdate(void* userData)
+{
+
+}
+
+void onClose(void* userData, ULWindow window)
+{
+	ulAppQuit(app);
+}
+
+void onResize(void* userData, ULWindow window, uint width, uint height)
+{
+	ulOverlayResize(overlay, width, height);
+}
+
+void onDOMReady(void* userData, ULView caller, ulong frameId, bool isMainFrame, ULString url)
+{
+
+}
+
+void init()
+{
+	ULString baseFSPath = ulCreateString("./");
+	ulEnablePlatformFileSystem(baseFSPath);
+	ulDestroyString(baseFSPath);
+
+	ULSettings settings = ulCreateSettings();
+	ulSettingsSetForceCPURenderer(settings, true);
+
+	ULString baseDir = ulCreateString("./");
+	ulSettingsSetFileSystemPath(settings, baseDir);
+	ulDestroyString(baseDir);
+
+	ULConfig config = ulCreateConfig();
+
+	app = ulCreateApp(settings, config);
+
+	ulAppSetUpdateCallback(app, &onUpdate, null);
+
+	ulDestroySettings(settings);
+	ulDestroyConfig(config);
+
+	window = ulCreateWindow(ulAppGetMainMonitor(app), 500, 500, false, ULWindowFlags.kWindowFlags_Titled | ULWindowFlags.kWindowFlags_Resizable);
+
+	ulWindowSetTitle(window, "Ultralightd Sample");
+
+	ulWindowSetCloseCallback(window, &onClose, null);
+
+	ulWindowSetResizeCallback(window, &onResize, null);
+
+	overlay = ulCreateOverlay(window, ulWindowGetWidth(window), ulWindowGetHeight(window), 0, 0);
+	view = ulOverlayGetView(overlay);
+
+	ulViewSetDOMReadyCallback(view, &onDOMReady, null);
+
+	ULString url = ulCreateString("file:///assets/app.html");
+	ulViewLoadURL(view, url);
+	ulDestroyString(url);
+}
+
+void quit()
+{
+	ulDestroyOverlay(overlay);
+	ulDestroyWindow(window);
+	ulDestroyApp(app);
+}
+
+void main()
+{
+	init();
+	ulAppRun(app);
+	quit();
+}
+*/

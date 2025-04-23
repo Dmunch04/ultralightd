@@ -19,7 +19,7 @@ public alias ULOverlay = C_Overlay*;
 /++
  + 
  +/
-alias ULUpdateCallback = void function(void*);
+alias ULUpdateCallback = extern(C) void function(void*);
 
 
 
@@ -31,12 +31,12 @@ alias ULUpdateCallback = void function(void*);
 /++
  + 
  +/
-alias ULCloseCallback = void function(void*, ULWindow);
+alias ULCloseCallback = extern(C) void function(void*, ULWindow);
 
 /++
  + 
  +/
-alias ULResizeCallback = void function(void*, ULWindow, uint, uint);
+alias ULResizeCallback = extern(C) void function(void*, ULWindow, uint, uint);
 
 
 
