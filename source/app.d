@@ -2,6 +2,7 @@ import std.stdio;
 import core.thread;
 
 import ultralightd.bindings;
+import ultralightd.wrapper;
 
 ULApp app;
 ULOverlay overlay;
@@ -29,6 +30,11 @@ void main()
     char* cstr = ulStringGetData(str);
     
     writeln(cstr2dstr(cstr));
+    
+    String s = String(str, false);
+    writeln(s);
+    //s.dispose();
+    //writeln(s);
 
 	ULString baseFSPath = ulCreateString("./");
 	ulEnablePlatformFileSystem(baseFSPath);

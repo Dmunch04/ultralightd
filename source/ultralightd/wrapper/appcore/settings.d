@@ -23,14 +23,4 @@ public struct Settings
     {
         
     }
-    
-    public void setCachePath(string path) 
-    {
-        //ulSettingsSetCachePath(this.raw, path.toStringz());
-    }
-    
-    public void setPersistentStoragePath(string path) 
-    {
-        //ulSettingsSetPersistentStoragePath(this.raw, path.toStringz());
-    }
 }

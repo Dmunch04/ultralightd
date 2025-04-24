@@ -14,6 +14,18 @@
 			"copyFiles": ["lib/win/dll/*.dll"],
 			"libs": ["lib/win/AppCore", "lib/win/Ultralight", "lib/win/UltralightCore", "lib/win/WebCore"],
 			"targetPath": "build"
+		},
+		{
+		  "name": "ultralightd-linux",
+      "targetType": "executable",
+      "platforms": ["linux"],
+      "copyFiles": ["lib/linux/*.so"],
+      "libs": ["AppCore", "Ultralight", "UltralightCore", "WebCore"],
+      "lflags": [
+        "-L$PACKAGE_DIR/lib/linux",
+        "-rpath=$$ORIGIN"
+      ],
+      "targetPath": "build"
 		}
 	]
 }
