@@ -1,6 +1,7 @@
 module ultralightd.wrapper.appcore.monitor;
 
 import ultralightd.bindings.appcore;
+import ultralightd.wrapper.util;
 
 public struct Monitor
 {
@@ -18,11 +19,11 @@ public struct Monitor
         return Monitor(raw);
     }
 
-    public ULMonitor raw() @property => this.monitor;
+    public const(ULMonitor) raw() const @property => this.monitor;
 
-    public double scale() @property => ulMonitorGetScale(this.raw);
+    public double scale() const @property => ulMonitorGetScale(this.raw.asMut!ULMonitor);
 
-    public uint width() @property => ulMonitorGetWidth(this.raw);
+    public uint width() const @property => ulMonitorGetWidth(this.raw.asMut!ULMonitor);
 
-    public uint height() @property => ulMonitorGetHeight(this.raw);
+    public uint height() const @property => ulMonitorGetHeight(this.raw.asMut!ULMonitor);
 }

@@ -6,7 +6,7 @@ public struct Settings
 {
     private ULSettings settings;
     
-    public this(int a)
+    public this()
     {
         auto raw = ulCreateSettings();
         if (raw is null)
@@ -17,7 +17,7 @@ public struct Settings
         this.settings = raw;
     }
     
-    public ULSettings raw() @property => this.settings;
+    public const(ULSettings) raw() const @property => this.settings;
     
     public void setDeveloperName(string name)
     {
