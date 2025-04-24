@@ -1,31 +1,31 @@
 {
-	"authors": [
-		"munchii"
-	],
-	"copyright": "Copyright © 2024, munchii",
-	"description": "A minimal D application.",
-	"license": "MIT",
-	"name": "ultralightd",
-	"configurations": [
-		{
-			"name": "ultralightd-windows",
-			"targetType": "executable",
-			"platforms": ["windows"],
-			"copyFiles": ["lib/win/dll/*.dll"],
-			"libs": ["lib/win/AppCore", "lib/win/Ultralight", "lib/win/UltralightCore", "lib/win/WebCore"],
-			"targetPath": "build"
-		},
-		{
-		  "name": "ultralightd-linux",
+  "authors": ["munchii"],
+  "copyright": "Copyright © 2024-2025, munchii",
+  "description": "High level D bindings for Ultralight.",
+  "license": "MIT",
+  "name": "ultralightd",
+  "configurations": [
+    {
+      "name": "ultralightd-windows",
+      "targetType": "executable",
+      "platforms": ["windows"],
+      "copyFiles": ["lib/win/dll/*.dll"],
+      "libs": [
+        "lib/win/AppCore",
+        "lib/win/Ultralight",
+        "lib/win/UltralightCore",
+        "lib/win/WebCore"
+      ],
+      "targetPath": "build"
+    },
+    {
+      "name": "ultralightd-linux",
       "targetType": "executable",
       "platforms": ["linux"],
       "copyFiles": ["lib/linux/*.so"],
       "libs": ["AppCore", "Ultralight", "UltralightCore", "WebCore"],
-      "lflags": [
-        "-L$PACKAGE_DIR/lib/linux",
-        "-rpath=$$ORIGIN"
-      ],
+      "lflags": ["-L$PACKAGE_DIR/lib/linux", "-rpath=$$ORIGIN"],
       "targetPath": "build"
-		}
-	]
+    }
+  ]
 }
