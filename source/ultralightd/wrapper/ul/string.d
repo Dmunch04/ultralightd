@@ -1,135 +1,123 @@
 module ultralightd.wrapper.ul.string;
 
 import ultralightd.bindings.ultralight;
+import ultralightd.wrapper.util;
 
+/++
+ + A wrapper for the ULString type.
+ +/
 public struct String
 {
-    private ULString str;
+    private ULString handle;
     private bool owned;
-    
-    this(this) @trusted
-    {
-        if (this.str !is null)
-        {
-            ULString newHandle = ulCreateStringFromCopy(this.str);
-            assert (newHandle !is null, "New ULString handle was null");
-            
-            this.str = newHandle;
-            this.owned = true;
-        }
-        else
-        {
-            this.owned = true;
-        }
-    }
-    
-    ~this()
-    {
-        if (this.owned && this.str !is null)
-        {
-            ulDestroyString(this.str);
-        }
-    }
-    
+
+    mixin Handled!(ULString, "ulCreateStringFromCopy", "ulDestroyString");
+
+    /++
+     + Creates a new empty String
+     +/
     public static String empty()
     {
         return fromString("");
     }
-    
+
+    /++
+     + Creates a new String from a D string
+     +/
     public static String fromString(string s)
     {
         import std.string : toStringz;
-        
+
         auto cstr = s.toStringz();
         auto raw = ulCreateString(cstr);
         if (raw is null)
         {
             throw new Exception("Failed to create ULString");
         }
-        
+
         return String(raw, true);
     }
-    
+
+    /++
+     + Creates a copy of another String
+     +/
     public static String fromCopy(String str)
     {
-        auto raw = ulCreateStringFromCopy(str.str);
+        auto raw = ulCreateStringFromCopy(str.handle);
         return String(raw, true);
     }
-    
-    public ULString raw() @property => this.str;
-    
+
+    /// Get a reference to the raw ULString handle.
+    public ULString raw() @property => this.handle;
+
+    /// Determines if this String owns the ULString handle.
     public bool isOwned() @property => this.owned;
-    
-    public string toDString() @property
-    {
-        import core.stdc.string : strlen;
-        import std.string : toStringz;
-        
-        if (this.str is null)
-        {
-            return "";
-        }
-        
-        auto cstr = ulStringGetData(this.str);
-        return cast(string) (cstr ? cstr[0 .. strlen(cstr)] : "");
-    }
-    
+
+    /// Get the underlying ULString's data as a D string.
     public string asString() @property
     {
-        if (this.str is null) return "";
+        if (this.handle is null) return "";
         if (isEmpty()) return "";
-        
+
         size_t len = length();
-        const(char)* cstr = ulStringGetData(this.str);
+        const(char)* cstr = ulStringGetData(this.handle);
         assert(cstr !is null, "ulStringGetData returned null");
-        
+
         const(char)[] cSlice = cstr[0 .. len];
         return cSlice.idup;
     }
-    
+
+    /// Get the length of the string.
     public size_t length() @property
     {
-        if (this.str is null)
+        if (this.handle is null)
         {
             return 0;
         }
-        
-        return ulStringGetLength(this.str);
+
+        return ulStringGetLength(this.handle);
     }
-    
+
+    /// Determines if the string is empty.
     public bool isEmpty() @property
     {
-        if (this.str is null)
+        if (this.handle is null)
         {
             return true;
         }
-        
-        return length() == 0;
+
+        return ulStringIsEmpty(this.handle);
     }
-    
+
+    /++
+     + Assigns the contents of another String to this String.
+     +/
     public void assign(String other)
     {
-        if (this.str is null || other.str is null)
+        if (this.handle is null || other.raw is null)
         {
             throw new Exception("Cannot assign null ULString");
         }
-        
-        ulStringAssignString(this.str, other.str);
+
+        ulStringAssignString(this.handle, other.raw);
     }
-    
+
+    /++
+     + Assigns the contents of a D string to this String.
+     +/
     public void assignString(string s)
     {
         import std.string : toStringz;
-        
-        if (this.str is null)
+
+        if (this.handle is null)
         {
             throw new Exception("Cannot assign null ULString");
         }
-        
+
         auto cstr = s.toStringz();
-        ulStringAssignCString(this.str, cstr);
+        ulStringAssignCString(this.handle, cstr);
     }
-    
+
     public void toString(scope void delegate(const(char)[]) sink)
     {
         sink(asString());
