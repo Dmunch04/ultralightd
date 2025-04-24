@@ -8,7 +8,7 @@ import ultralightd.wrapper.util;
  +/
 public struct String
 {
-    private ULString handle;
+    package ULString handle;
     private bool owned;
 
     mixin Handled!(ULString, "ulCreateStringFromCopy", "ulDestroyString");
@@ -48,19 +48,21 @@ public struct String
     }
 
     /// Get a reference to the raw ULString handle.
-    public ULString raw() @property => this.handle;
+    public const(ULString) raw() const @property => this.handle;
 
     /// Determines if this String owns the ULString handle.
-    public bool isOwned() @property => this.owned;
+    public bool isOwned() const @property => this.owned;
 
     /// Get the underlying ULString's data as a D string.
-    public string asString() @property
+    public string asString() const @property
     {
         if (this.handle is null) return "";
         if (isEmpty()) return "";
 
         size_t len = length();
-        const(char)* cstr = ulStringGetData(this.handle);
+        // UNSAFE-CAST: cast(ULString) is required to avoid a compiler error
+        // ulStringGetData(cast(ULString) this.handle);
+        const(char)* cstr = ulStringGetData(this.handle.asMut!ULString);
         assert(cstr !is null, "ulStringGetData returned null");
 
         const(char)[] cSlice = cstr[0 .. len];
@@ -68,38 +70,44 @@ public struct String
     }
 
     /// Get the length of the string.
-    public size_t length() @property
+    public size_t length() const @property
     {
         if (this.handle is null)
         {
             return 0;
         }
 
-        return ulStringGetLength(this.handle);
+        // UNSAFE-CAST: cast(ULString) is required to avoid a compiler error
+        //return ulStringGetLength(cast(ULString) this.handle);
+        return ulStringGetLength(this.handle.asMut!ULString);
     }
 
     /// Determines if the string is empty.
-    public bool isEmpty() @property
+    public bool isEmpty() const @property
     {
         if (this.handle is null)
         {
             return true;
         }
 
-        return ulStringIsEmpty(this.handle);
+        // UNSAFE-CAST: cast(ULString) is required to avoid a compiler error
+        //return ulStringIsEmpty(cast(ULString) this.handle);
+        return ulStringIsEmpty(this.handle.asMut!ULString);
     }
 
     /++
      + Assigns the contents of another String to this String.
      +/
-    public void assign(String other)
+    public void assign(const ref String other)
     {
-        if (this.handle is null || other.raw is null)
+        if (this.handle is null || other.handle is null)
         {
             throw new Exception("Cannot assign null ULString");
         }
 
-        ulStringAssignString(this.handle, other.raw);
+        // UNSAFE-CAST: cast(ULString) is required to avoid a compiler error
+        //ulStringAssignString(this.handle, cast(ULString) other.handle);
+        ulStringAssignString(this.handle, other.handle.asMut!ULString);
     }
 
     /++
@@ -118,7 +126,7 @@ public struct String
         ulStringAssignCString(this.handle, cstr);
     }
 
-    public void toString(scope void delegate(const(char)[]) sink)
+    public void toString(scope void delegate(const(char)[]) sink) const
     {
         sink(asString());
     }
