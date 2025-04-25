@@ -17,9 +17,9 @@ public alias ULMonitor = C_Monitor*;
 public alias ULOverlay = C_Overlay*;
 
 /// Callback types
-public alias ULUpdateCallback = extern(C) void function(void* userData);
-public alias ULCloseCallback = extern(C) void function(void* userData, ULWindow window);
-public alias ULResizeCallback = extern(C) void function(void* userData, ULWindow window, uint width, uint height);
+public alias ULUpdateCallback = extern(C) void function(void* user_data);
+public alias ULCloseCallback = extern(C) void function(void* user_data, ULWindow window);
+public alias ULResizeCallback = extern(C) void function(void* user_data, ULWindow window, uint width, uint height);
 
 /// Enum definitions
 extern(C) public enum ULWindowFlags : uint
@@ -42,7 +42,7 @@ extern(C) @system
     public void ulSettingsSetAppName(ULSettings settings, ULString name);
     public void ulSettingsSetFileSystemPath(ULSettings settings, ULString path);
     public void ulSettingsSetLoadShadersFromFileSystem(ULSettings settings, bool enabled);
-    public void ulSettingsSetForceCPURenderer(ULSettings settings, bool forceCPU);
+    public void ulSettingsSetForceCPURenderer(ULSettings settings, bool force_cpu);
 }
 
 /// Function declarations for the App API
@@ -50,7 +50,7 @@ extern(C) @system
 {
     public ULApp ulCreateApp(ULSettings settings, ULConfig config);
     public void ulDestroyApp(ULApp app);
-    public void ulAppSetUpdateCallback(ULApp app, ULUpdateCallback callback, void* userData);
+    public void ulAppSetUpdateCallback(ULApp app, ULUpdateCallback callback, void* user_data);
     public bool ulAppIsRunning(ULApp app);
     public ULMonitor ulAppGetMainMonitor(ULApp app);
     public ULRenderer ulAppGetRenderer(ULApp app);
@@ -69,10 +69,10 @@ extern(C) @system
 /// Function declarations for the Window API
 extern(C) @system
 {
-    public ULWindow ulCreateWindow(ULMonitor monitor, uint width, uint height, bool fullscreen, uint windowFlags);
+    public ULWindow ulCreateWindow(ULMonitor monitor, uint width, uint height, bool fullscreen, uint window_flags);
     public void ulDestroyWindow(ULWindow window);
-    public void ulWindowSetCloseCallback(ULWindow window, ULCloseCallback callback, void* userData);
-    public void ulWindowSetResizeCallback(ULWindow window, ULResizeCallback callback, void* userData);
+    public void ulWindowSetCloseCallback(ULWindow window, ULCloseCallback callback, void* user_data);
+    public void ulWindowSetResizeCallback(ULWindow window, ULResizeCallback callback, void* user_data);
     public uint ulWindowGetScreenWidth(ULWindow window);
     public uint ulWindowGetWidth(ULWindow window);
     public uint ulWindowGetScreenHeight(ULWindow window);
@@ -119,6 +119,6 @@ extern(C) @system
 extern(C) @system
 {
     public void ulEnablePlatformFontLoader();
-    public void ulEnablePlatformFileSystem(ULString baseDir);
-    public void ulEnableDefaultLogger(ULString logPath);
+    public void ulEnablePlatformFileSystem(ULString base_dir);
+    public void ulEnableDefaultLogger(ULString log_path);
 }

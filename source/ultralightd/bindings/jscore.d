@@ -147,117 +147,117 @@ extern(C) __gshared JSClassDefinitionEmpty kJSClassDefinitionEmpty;
 /// Function declarations for the Context API
 extern(C) @system
 {
-    public JSContextGroupRef JSContextGroupCreate();
-    public JSContextGroupRef JSContextGroupRetain(JSContextGroupRef group);
-    public void JSContextGroupRelease(JSContextGroupRef group);
+    public JSContextGroupRef  JSContextGroupCreate();
+    public JSContextGroupRef  JSContextGroupRetain(JSContextGroupRef group);
+    public void               JSContextGroupRelease(JSContextGroupRef group);
     
     public JSGlobalContextRef JSGlobalContextCreate(JSClassRef globalObjectClass);
     public JSGlobalContextRef JSGlobalContextCreateInGroup(JSContextGroupRef group, JSClassRef globalObjectClass);
     public JSGlobalContextRef JSGlobalContextRetain(JSGlobalContextRef ctx);
-    public void JSGlobalContextRelease(JSGlobalContextRef ctx);
-    public JSObjectRef JSGlobalContextGetGlobalObject(JSGlobalContextRef ctx);
-    public JSContextGroupRef JSContextGetGroup(JSContextRef ctx);
+    public void               JSGlobalContextRelease(JSGlobalContextRef ctx);
+    public JSObjectRef        JSGlobalContextGetGlobalObject(JSGlobalContextRef ctx);
+    public JSContextGroupRef  JSContextGetGroup(JSContextRef ctx);
     public JSGlobalContextRef JSContextGetGlobalContext(JSContextRef ctx);
-    public JSStringRef JSGlobalContextCopyName(JSGlobalContextRef ctx);
-    public void JSGlobalContextSetName(JSGlobalContextRef ctx, JSStringRef name);
-    public bool JSGlobalContextIsInspectable(JSGlobalContextRef ctx);
-    public void JSGlobalContextSetInspectable(JSGlobalContextRef ctx, bool inspectable);
+    public JSStringRef        JSGlobalContextCopyName(JSGlobalContextRef ctx);
+    public void               JSGlobalContextSetName(JSGlobalContextRef ctx, JSStringRef name);
+    public bool               JSGlobalContextIsInspectable(JSGlobalContextRef ctx);
+    public void               JSGlobalContextSetInspectable(JSGlobalContextRef ctx, bool inspectable);
 }
 
 /// Function declarations for the String API
 extern(C) @system
 {
-    public JSStringRef JSStringCreateWithCharacters(const(JSChar)* chars, size_t numChars);
-    public JSStringRef JSStringCreateWithUTF8CString(const(char)* string);
-    public JSStringRef JSStringRetain(JSStringRef string);
-    public void JSStringRelease(JSStringRef string);
-    public size_t JSStringGetLength(JSStringRef string);
+    public JSStringRef    JSStringCreateWithCharacters(const(JSChar)* chars, size_t numChars);
+    public JSStringRef    JSStringCreateWithUTF8CString(const(char)* string);
+    public JSStringRef    JSStringRetain(JSStringRef string);
+    public void           JSStringRelease(JSStringRef string);
+    public size_t         JSStringGetLength(JSStringRef string);
     public const(JSChar)* JSStringGetCharactersPtr(JSStringRef string);
-    public size_t JSStringGetMaximumUTF8CStringSize(JSStringRef string);
-    public size_t JSStringGetUTF8CString(JSStringRef string, char* buffer, size_t bufferSize);
-    public bool JSStringIsEqual(JSStringRef a, JSStringRef b);
-    public bool JSStringIsEqualToUTF8CString(JSStringRef a, const(char)* b);
+    public size_t         JSStringGetMaximumUTF8CStringSize(JSStringRef string);
+    public size_t         JSStringGetUTF8CString(JSStringRef string, char* buffer, size_t bufferSize);
+    public bool           JSStringIsEqual(JSStringRef a, JSStringRef b);
+    public bool           JSStringIsEqualToUTF8CString(JSStringRef a, const(char)* b);
 }
 
 /// Function declarations for the Object API
 extern(C) @system
 {
-    public JSClassRef JSClassCreate(const(JSClassDefinition)* definition);
-    public JSClassRef JSClassRetain(JSClassRef jsClass);
-    public void JSClassRelease(JSClassRef jsClass);
-    public JSObjectRef JSObjectMake(JSContextRef ctx, JSClassRef jsClass, void* data);
-    public JSObjectRef JSObjectMakeFunctionWithCallback(JSContextRef ctx, JSStringRef name, JSObjectCallAsFunctionCallback callback);
-    public JSObjectRef JSMakeConstructor(JSContextRef ctx, JSClassRef jsClass, JSObjectCallAsConstructorCallback callAsConstructor);
-    public JSObjectRef JSObjectMakeArray(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
-    public JSObjectRef JSObjectMakeDate(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
-    public JSObjectRef JSObjectMakeError(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
-    public JSObjectRef JSObjectMakeRegExp(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
-    public JSObjectRef JSObjectMakeDeferredPromise(JSContextRef ctx, JSObjectRef* resolve, JSObjectRef* reject, JSValueRef* exception);
-    public JSObjectRef JSObjectMakeFunction(JSContextRef ctx, JSStringRef name, uint paramaterCount, const(JSStringRef)[] parameterNames, JSStringRef body, JSStringRef sourceURL, int startingLineNumber, JSValueRef* exception);
-    public JSObjectRef JSObjectGetPrototype(JSContextRef ctx, JSObjectRef object);
-    public void JSObjectSetPrototype(JSContextRef ctx, JSObjectRef object, JSObjectRef value);
-    public bool JSObjectHasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
-    public JSValueRef JSObjectGetProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef* exception);
-    public void JSObjectSetProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef value, JSPropertyAttributes attributes, JSValueRef* exception);
-    public bool JSObjectDeleteProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef* exception);
-    public bool JSObjectHasPropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef* exception);
-    public JSValueRef JSObjectGetPropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef* exception);
-    public void JSObjectSetPropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef value, JSPropertyAttributes attributes, JSValueRef* exception);
-    public bool JSObjectDeletePropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef* exception);
-    public JSValueRef JSObjectGetPropertyAtIndex(JSContextRef ctx, JSObjectRef object, uint propertyIndex, JSValueRef* exception);
-    public void JSObjectSetPropertyAtIndex(JSContextRef ctx, JSObjectRef object, uint propertyIndex, JSValueRef value, JSValueRef* exception);
-    public bool JSObjectSetPrivate(JSObjectRef object, void* data);
-    public bool JSObjectIsFunction(JSContextRef ctx, JSObjectRef object);
-    public JSValueRef JSObjectCallAsFunction(JSContextRef ctx, JSObjectRef object, JSObjectRef thisObject, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
-    public bool JSObjectIsConstructor(JSContextRef ctx, JSObjectRef object);
-    public JSValueRef JSObjectCallAsConstructor(JSContextRef ctx, JSObjectRef object, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
+    public JSClassRef             JSClassCreate(const(JSClassDefinition)* definition);
+    public JSClassRef             JSClassRetain(JSClassRef jsClass);
+    public void                   JSClassRelease(JSClassRef jsClass);
+    public JSObjectRef            JSObjectMake(JSContextRef ctx, JSClassRef jsClass, void* data);
+    public JSObjectRef            JSObjectMakeFunctionWithCallback(JSContextRef ctx, JSStringRef name, JSObjectCallAsFunctionCallback callback);
+    public JSObjectRef            JSMakeConstructor(JSContextRef ctx, JSClassRef jsClass, JSObjectCallAsConstructorCallback callAsConstructor);
+    public JSObjectRef            JSObjectMakeArray(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
+    public JSObjectRef            JSObjectMakeDate(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
+    public JSObjectRef            JSObjectMakeError(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
+    public JSObjectRef            JSObjectMakeRegExp(JSContextRef ctx, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
+    public JSObjectRef            JSObjectMakeDeferredPromise(JSContextRef ctx, JSObjectRef* resolve, JSObjectRef* reject, JSValueRef* exception);
+    public JSObjectRef            JSObjectMakeFunction(JSContextRef ctx, JSStringRef name, uint paramaterCount, const(JSStringRef)[] parameterNames, JSStringRef body, JSStringRef sourceURL, int startingLineNumber, JSValueRef* exception);
+    public JSObjectRef            JSObjectGetPrototype(JSContextRef ctx, JSObjectRef object);
+    public void                   JSObjectSetPrototype(JSContextRef ctx, JSObjectRef object, JSObjectRef value);
+    public bool                   JSObjectHasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+    public JSValueRef             JSObjectGetProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef* exception);
+    public void                   JSObjectSetProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef value, JSPropertyAttributes attributes, JSValueRef* exception);
+    public bool                   JSObjectDeleteProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef* exception);
+    public bool                   JSObjectHasPropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef* exception);
+    public JSValueRef             JSObjectGetPropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef* exception);
+    public void                   JSObjectSetPropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef value, JSPropertyAttributes attributes, JSValueRef* exception);
+    public bool                   JSObjectDeletePropertyForKey(JSContextRef ctx, JSObjectRef object, JSValueRef propertyKey, JSValueRef* exception);
+    public JSValueRef             JSObjectGetPropertyAtIndex(JSContextRef ctx, JSObjectRef object, uint propertyIndex, JSValueRef* exception);
+    public void                   JSObjectSetPropertyAtIndex(JSContextRef ctx, JSObjectRef object, uint propertyIndex, JSValueRef value, JSValueRef* exception);
+    public bool                   JSObjectSetPrivate(JSObjectRef object, void* data);
+    public bool                   JSObjectIsFunction(JSContextRef ctx, JSObjectRef object);
+    public JSValueRef             JSObjectCallAsFunction(JSContextRef ctx, JSObjectRef object, JSObjectRef thisObject, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
+    public bool                   JSObjectIsConstructor(JSContextRef ctx, JSObjectRef object);
+    public JSValueRef             JSObjectCallAsConstructor(JSContextRef ctx, JSObjectRef object, size_t argumentCount, const(JSValueRef)[] arguments, JSValueRef* exception);
     public JSPropertyNameArrayRef JSObjectCopyPropertyNames(JSContextRef ctx, JSObjectRef object);
     public JSPropertyNameArrayRef JSPropertyNameArrayRetain(JSPropertyNameArrayRef array);
-    public void JSPropertyNameArrayRelease(JSPropertyNameArrayRef array);
-    public size_t JSPropertyNameArrayGetCount(JSPropertyNameArrayRef array);
-    public JSStringRef JSPropertyNameArrayGetNameAtIndex(JSPropertyNameArrayRef array, size_t index);
-    public void JSPropertyNameAccumulatorAddName(JSPropertyNameAccumulatorRef accumulator, JSStringRef propertyName);
+    public void                   JSPropertyNameArrayRelease(JSPropertyNameArrayRef array);
+    public size_t                 JSPropertyNameArrayGetCount(JSPropertyNameArrayRef array);
+    public JSStringRef            JSPropertyNameArrayGetNameAtIndex(JSPropertyNameArrayRef array, size_t index);
+    public void                   JSPropertyNameAccumulatorAddName(JSPropertyNameAccumulatorRef accumulator, JSStringRef propertyName);
     
     /// ObjectRef Private API
-    public bool JSObjectSetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef value);
-    public JSValueRef JSObjectGetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
-    public bool JSObjectDeletePrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
-    public JSObjectRef JSObjectGetProxyTarget(JSObjectRef object);
-    public JSGlobalContextRef JSObjectGetGlobalContext(JSObjectRef object);
+    public bool                   JSObjectSetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef value);
+    public JSValueRef             JSObjectGetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+    public bool                   JSObjectDeletePrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+    public JSObjectRef            JSObjectGetProxyTarget(JSObjectRef object);
+    public JSGlobalContextRef     JSObjectGetGlobalContext(JSObjectRef object);
 }
 
 /// Function declarations for the Value API
 extern(C) @system
 {
-    public JSType JSValueGetType(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsUndefined(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsNull(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsBoolean(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsNumber(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsString(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsSymbol(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsObject(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsObjectOfClass(JSContextRef ctx, JSValueRef value, JSClassRef jsClass);
-    public bool JSValueIsArray(JSContextRef ctx, JSValueRef value);
-    public bool JSValueIsDate(JSContextRef ctx, JSValueRef value);
+    public JSType           JSValueGetType(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsUndefined(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsNull(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsBoolean(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsNumber(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsString(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsSymbol(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsObject(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsObjectOfClass(JSContextRef ctx, JSValueRef value, JSClassRef jsClass);
+    public bool             JSValueIsArray(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsDate(JSContextRef ctx, JSValueRef value);
     public JSTypedArrayType JSValueGetTypedArrayType(JSContextRef ctx, JSValueRef value, JSValueRef* exception);
-    public bool JSValueIsEqual(JSContextRef ctx, JSValueRef a, JSValueRef b, JSValueRef* exception);
-    public bool JSValueIsStrictEqual(JSContextRef ctx, JSValueRef a, JSValueRef b);
-    public bool JSValueIsInstanceOfConstructor(JSContextRef ctx, JSValueRef value, JSObjectRef constructor, JSValueRef* exception);
-    public JSValueRef JSValueMakeUndefined(JSContextRef ctx);
-    public JSValueRef JSValueMakeNull(JSContextRef ctx);
-    public JSValueRef JSValueMakeBoolean(JSContextRef ctx, bool boolean);
-    public JSValueRef JSValueMakeNumber(JSContextRef ctx, double number);
-    public JSValueRef JSValueMakeString(JSContextRef ctx, JSStringRef string);
-    public JSValueRef JSValueMakeSymbol(JSContextRef ctx, JSStringRef description);
-    public JSValueRef JSValueMakeFromJSONString(JSContextRef ctx, JSStringRef string);
-    public JSStringRef JSValueCreateJSONString(JSContextRef ctx, JSValueRef value, uint indent, JSValueRef* exception);
-    public bool JSValueToBoolean(JSContextRef ctx, JSValueRef value);
-    public double JSValueToNumber(JSContextRef ctx, JSValueRef value, JSValueRef* exception);
-    public JSStringRef JSValueToStringCopy(JSContextRef ctx, JSValueRef value, JSValueRef* exception);
-    public JSValueRef JSValueToObject(JSContextRef ctx, JSValueRef value, JSValueRef* exception);
-    public void JSValueProtect(JSContextRef ctx, JSValueRef value);
-    public void JSValueUnprotect(JSContextRef ctx, JSValueRef value);
+    public bool             JSValueIsEqual(JSContextRef ctx, JSValueRef a, JSValueRef b, JSValueRef* exception);
+    public bool             JSValueIsStrictEqual(JSContextRef ctx, JSValueRef a, JSValueRef b);
+    public bool             JSValueIsInstanceOfConstructor(JSContextRef ctx, JSValueRef value, JSObjectRef constructor, JSValueRef* exception);
+    public JSValueRef       JSValueMakeUndefined(JSContextRef ctx);
+    public JSValueRef       JSValueMakeNull(JSContextRef ctx);
+    public JSValueRef       JSValueMakeBoolean(JSContextRef ctx, bool boolean);
+    public JSValueRef       JSValueMakeNumber(JSContextRef ctx, double number);
+    public JSValueRef       JSValueMakeString(JSContextRef ctx, JSStringRef string);
+    public JSValueRef       JSValueMakeSymbol(JSContextRef ctx, JSStringRef description);
+    public JSValueRef       JSValueMakeFromJSONString(JSContextRef ctx, JSStringRef string);
+    public JSStringRef      JSValueCreateJSONString(JSContextRef ctx, JSValueRef value, uint indent, JSValueRef* exception);
+    public bool             JSValueToBoolean(JSContextRef ctx, JSValueRef value);
+    public double           JSValueToNumber(JSContextRef ctx, JSValueRef value, JSValueRef* exception);
+    public JSStringRef      JSValueToStringCopy(JSContextRef ctx, JSValueRef value, JSValueRef* exception);
+    public JSValueRef       JSValueToObject(JSContextRef ctx, JSValueRef value, JSValueRef* exception);
+    public void             JSValueProtect(JSContextRef ctx, JSValueRef value);
+    public void             JSValueUnprotect(JSContextRef ctx, JSValueRef value);
 }
 
 /// Function declarations for the Typed Array API

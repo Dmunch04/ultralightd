@@ -48,9 +48,9 @@ public alias ULIndexType = uint;
 public alias ULClipboardClearCallback = extern(C) void function();
 public alias ULClipboardReadPlainTextCallback = extern(C) void function(ULString result);
 public alias ULClipboardWritePlainTextCallback = extern(C) void function(ULString text);
-public alias ULDestroyBufferCallback = extern(C) void function(void* userData, void* data);
+public alias ULDestroyBufferCallback = extern(C) void function(void* user_data, void* data);
 
-public alias ULLoggerLogMessageCallback = extern(C) void function(ULLogLevel logLevel, ULString message);
+public alias ULLoggerLogMessageCallback = extern(C) void function(ULLogLevel log_level, ULString message);
 
 public alias ULFileSystemFileExistsCallback = extern(C) bool function(ULString path);
 public alias ULFileSystemGetFileMimeTypeCallback = extern(C) ULString function(ULString path);
@@ -62,42 +62,42 @@ public alias ULFontLoaderGetFallbackFontForCharacters = extern(C) ULString funct
 public alias ULFontLoaderLoad = extern(C) ULFontFile function(ULString family, int weight, bool italic);
 
 public alias ULSurfaceDefinitionCreateCallback = extern(C) void* function(uint width, uint height);
-public alias ULSurfaceDefinitionDestroyCallback = extern(C) void function(void* userData);
-public alias ULSurfaceDefinitionGetWidthCallback = extern(C) uint function(void* userData);
-public alias ULSurfaceDefinitionGetHeightCallback = extern(C) uint function(void* userData);
-public alias ULSurfaceDefinitionGetRowBytesCallback = extern(C) uint function(void* userData);
-public alias ULSurfaceDefinitionGetSizeCallback = extern(C) size_t function(void* userData);
-public alias ULSurfaceDefinitionLockPixelsCallback = extern(C) void* function(void* userData);
-public alias ULSurfaceDefinitionUnlockPixelsCallback = extern(C) void function(void* userData);
-public alias ULSurfaceDefinitionResizeCallback = extern(C) void function(void* userData, uint width, uint height);
+public alias ULSurfaceDefinitionDestroyCallback = extern(C) void function(void* user_data);
+public alias ULSurfaceDefinitionGetWidthCallback = extern(C) uint function(void* user_data);
+public alias ULSurfaceDefinitionGetHeightCallback = extern(C) uint function(void* user_data);
+public alias ULSurfaceDefinitionGetRowBytesCallback = extern(C) uint function(void* user_data);
+public alias ULSurfaceDefinitionGetSizeCallback = extern(C) size_t function(void* user_data);
+public alias ULSurfaceDefinitionLockPixelsCallback = extern(C) void* function(void* user_data);
+public alias ULSurfaceDefinitionUnlockPixelsCallback = extern(C) void function(void* user_data);
+public alias ULSurfaceDefinitionResizeCallback = extern(C) void function(void* user_data, uint width, uint height);
 
-public alias ULChangeTitleCallback = extern(C) void function(void* userData, ULView caller, ULString title);
-public alias ULChangeURLCallback = extern(C) void function(void* userData, ULView caller, ULString url);
-public alias ULChangeTooltipCallback = extern(C) void function(void* userData, ULView caller, ULString tooltip);
-public alias ULChangeCursorCallback = extern(C) void function(void* userData, ULView caller, ULCursor cursor);
-public alias ULAddConsoleMessageCallback = extern(C) void function(void* userData, ULView caller, ULMessageSource source, ULMessageLevel level, ULString message, uint lineNumber, uint columnNumber, ULString sourceId);
-public alias ULCreateChildViewCallback = extern(C) ULView function(void* userData, ULView caller, ULString openerURL, ULString targetURL, bool isPopup, ULIntRect popupRect);
-public alias ULCreateInspectorViewCallback = extern(C) ULView function(void* userData, ULView caller, bool isLocal, ULString inspectedURL);
-public alias ULBeginLoadingCallback = extern(C) void function(void* userData, ULView caller, ulong frameId, bool isMainFrame, ULString url);
-public alias ULFinishLoadingCallback = extern(C) void function(void* userData, ULView caller, ulong frameId, bool isMainFrame, ULString url);
-public alias ULFailLoadingCallback = extern(C) void function(void* userData, ULView caller, ulong frameId, bool isMainFrame, ULString url, ULString description, ULString errorDomain, int errorCode);
-public alias ULWindowObjectReadyCallback = extern(C) void function(void* userData, ULView caller, ulong frameId, bool isMainFrame, ULString url);
-public alias ULDOMReadyCallback = extern(C) void function(void* userData, ULView caller, ulong frameId, bool isMainFrame, ULString url);
-public alias ULUpdateHistoryCallback = extern(C) void function(void* userData, ULView caller);
+public alias ULChangeTitleCallback = extern(C) void function(void* user_data, ULView caller, ULString title);
+public alias ULChangeURLCallback = extern(C) void function(void* user_data, ULView caller, ULString url);
+public alias ULChangeTooltipCallback = extern(C) void function(void* user_data, ULView caller, ULString tooltip);
+public alias ULChangeCursorCallback = extern(C) void function(void* user_data, ULView caller, ULCursor cursor);
+public alias ULAddConsoleMessageCallback = extern(C) void function(void* user_data, ULView caller, ULMessageSource source, ULMessageLevel level, ULString message, uint line_number, uint column_number, ULString source_id);
+public alias ULCreateChildViewCallback = extern(C) ULView function(void* user_data, ULView caller, ULString opener_url, ULString target_url, bool is_popup, ULIntRect popup_rect);
+public alias ULCreateInspectorViewCallback = extern(C) ULView function(void* user_data, ULView caller, bool is_local, ULString inspected_url);
+public alias ULBeginLoadingCallback = extern(C) void function(void* user_data, ULView caller, ulong frame_id, bool is_main_frame, ULString url);
+public alias ULFinishLoadingCallback = extern(C) void function(void* user_data, ULView caller, ulong frame_id, bool is_main_frame, ULString url);
+public alias ULFailLoadingCallback = extern(C) void function(void* user_data, ULView caller, ulong frame_id, bool is_main_frame, ULString url, ULString description, ULString error_domain, int error_code);
+public alias ULWindowObjectReadyCallback = extern(C) void function(void* user_data, ULView caller, ulong frame_id, bool is_main_frame, ULString url);
+public alias ULDOMReadyCallback = extern(C) void function(void* user_data, ULView caller, ulong frame_id, bool is_main_frame, ULString url);
+public alias ULUpdateHistoryCallback = extern(C) void function(void* user_data, ULView caller);
 
 public alias ULGPUDriverBeginSynchronizeCallback = extern(C) void function();
 public alias ULGPUDriverEndSynchronizeCallback = extern(C) void function();
 public alias ULGPUDriverNextTextureIdCallback = extern(C) uint function();
-public alias ULGPUDriverCreateTextureCallback = extern(C) void function(uint textureId, ULBitmap bitmap);
-public alias ULGPUDriverUpdateTextureCallback = extern(C) void function(uint textureId, ULBitmap bitmap);
-public alias ULGPUDriverDestroyTextureCallback = extern(C) void function(uint textureId);
+public alias ULGPUDriverCreateTextureCallback = extern(C) void function(uint texture_id, ULBitmap bitmap);
+public alias ULGPUDriverUpdateTextureCallback = extern(C) void function(uint texture_id, ULBitmap bitmap);
+public alias ULGPUDriverDestroyTextureCallback = extern(C) void function(uint texture_id);
 public alias ULGPUDriverNextRenderBufferIdCallback = extern(C) uint function();
-public alias ULGPUDriverCreateRenderBufferCallback = extern(C) void function(uint renderBufferId, ULRenderBuffer buffer);
-public alias ULGPUDriverDestroyRenderBufferCallback = extern(C) void function(uint renderBufferId);
+public alias ULGPUDriverCreateRenderBufferCallback = extern(C) void function(uint render_buffer_id, ULRenderBuffer buffer);
+public alias ULGPUDriverDestroyRenderBufferCallback = extern(C) void function(uint render_buffer_id);
 public alias ULGPUDriverNextGeometryIdCallback = extern(C) uint function();
-public alias ULGPUDriverCreateGeometryCallback = extern(C) void function(uint geometryId, ULVertexBuffer vertices, ULIndexBuffer indices);
-public alias ULGPUDriverUpdateGeometryCallback = extern(C) void function(uint geometryId, ULVertexBuffer vertices, ULIndexBuffer indices);
-public alias ULGPUDriverDestroyGeometryCallback = extern(C) void function(uint geometryId);
+public alias ULGPUDriverCreateGeometryCallback = extern(C) void function(uint geometry_id, ULVertexBuffer vertices, ULIndexBuffer indices);
+public alias ULGPUDriverUpdateGeometryCallback = extern(C) void function(uint geometry_id, ULVertexBuffer vertices, ULIndexBuffer indices);
+public alias ULGPUDriverDestroyGeometryCallback = extern(C) void function(uint geometry_id);
 public alias ULGPUDriverUpdateCommandListCallback = extern(C) void function(ULCommandList list);
 
 /// Enum definitions
@@ -452,5 +452,69 @@ extern(C) @system
     public ULRect ulRectMakeEmpty();
     public bool ulIntRectIsEmpty(ULIntRect rect);
     public ULIntRect ulIntRectMakeEmpty();
-    public ULMatrix4x4 ulApplyProjection(ULMatrix4x4 transform, float viewportWidth, float viewportHeight, bool flipY);
+    public ULMatrix4x4 ulApplyProjection(ULMatrix4x4 transform, float viewport_width, float viewport_height, bool flip_y);
+}
+
+/// Function declarations for the String API
+extern(C) @system
+{
+    public ULString ulCreateString(const(char)* str);
+    public ULString ulCreateStringUTF8(const(char)* str, size_t length);
+    public ULString ulCreateStringUTF16(ULChar16* str, size_t length);
+    public ULString ulCreateStringFromCopy(ULString str);
+    public void ulDestroyString(ULString str);
+    public const(char)* ulStringGetData(ULString str);
+    public size_t ulStringGetLength(ULString str);
+    public bool ulStringIsEmpty(ULString str);
+    public void ulStringAssignString(ULString str, ULString new_str);
+    public void ulStringAssignCString(ULString str, const(char)* c_str);
+}
+
+/// Function declarations for the Buffer API
+extern(C) @system
+{
+    public ULBuffer ulCreateBuffer(void* data, size_t size, void* user_data, ULDestroyBufferCallback destruction_callback);
+    public ULBuffer ulCreateBufferFromCopy(const(void)* data, size_t size);
+    public void ulDestroyBuffer(ULBuffer buffer);
+    public void* ulBufferGetData(ULBuffer buffer);
+    public size_t ulBufferGetSize(ULBuffer buffer);
+    public void* ulBufferGetUserData(ULBuffer buffer);
+    public bool ulBufferOwnsData(ULBuffer buffer);
+}
+
+/// Function declarations for the Bitmap API
+extern(C) @system
+{
+    public ULBitmap ulCreateEmptyBitmap();
+    public ULBitmap ulCreateBitmap(uint width, uint height, ULBitmapFormat format);
+    public ULBitmap ulCreateBitmapFromPixels(uint width, uint height, ULBitmapFormat format, uint row_bytes, const(void)* pixels, size_t size, bool should_copy);
+    public ULBitmap ulCreateBitmapFromCopy(ULBitmap existing_bitmap);
+    public void ulDestroyBitmap(ULBitmap bitmap);
+    public uint ulBitmapGetWidth(ULBitmap bitmap);
+    public uint ulBitmapGetHeight(ULBitmap bitmap);
+    public ULBitmapFormat ulBitmapGetFormat(ULBitmap bitmap);
+    public uint ulBitmapGetBpp(ULBitmap bitmap);
+    public uint ulBitmapGetRowBytes(ULBitmap bitmap);
+    public size_t ulBitmapGetSize(ULBitmap bitmap);
+    public bool ulBitmapOwnsPixels(ULBitmap bitmap);
+    public void* ulBitmapLockPixels(ULBitmap bitmap);
+    public void ulBitmapUnlockPixels(ULBitmap bitmap);
+    public void* ulBitmapRawPixels(ULBitmap bitmap);
+    public bool ulBitmapIsEmpty(ULBitmap bitmap);
+    public void ulBitmapErase(ULBitmap bitmap);
+    public bool ulBitmapWritePNG(ULBitmap bitmap, const(char)* path);
+    public void ulBitmapSwapRedBlueChannels(ULBitmap bitmap);
+}
+
+/// Function declarations for the Config API
+extern(C) @system
+{
+    public ULConfig ulCreateConfig();
+    public void ulDestroyConfig(ULConfig config);
+    public void ulConfigSetCachePath(ULConfig config, ULString cache_path);
+    public void ulConfigSetResourcePathPrefix(ULConfig config, ULString resource_path_prefix);
+    public void ulConfigSetFaceWinding(ULConfig config, ULFaceWinding winding);
+    public void ulConfigSetFontHinting(ULConfig config, ULFontHinting font_hinting);
+    public void ulConfigSetFontGamma(ULConfig config, double font_gamma);
+    public void ulConfigSetUserStylesheet(ULConfig config, ULString css_string);
 }
