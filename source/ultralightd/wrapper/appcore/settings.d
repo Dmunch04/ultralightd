@@ -6,7 +6,7 @@ public struct Settings
 {
     private ULSettings settings;
     
-    public this()
+    public this(int a)
     {
         auto raw = ulCreateSettings();
         if (raw is null)

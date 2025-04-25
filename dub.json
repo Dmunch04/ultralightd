@@ -9,6 +9,7 @@
       "name": "ultralightd-windows",
       "targetType": "executable",
       "platforms": ["windows"],
+      //"versions": ["MEM_DBG"],
       "copyFiles": ["lib/win/dll/*.dll"],
       "libs": [
         "lib/win/AppCore",

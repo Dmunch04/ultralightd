@@ -32,6 +32,7 @@ void main()
     writeln(cstr2dstr(cstr));
     
     String s = String(str, true);
+    
     writeln(s);
     //s.dispose();
     //writeln(s);

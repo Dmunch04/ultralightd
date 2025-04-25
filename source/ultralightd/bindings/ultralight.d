@@ -1701,6 +1701,7 @@ public extern(C) nothrow
      + Get length (in bytes) of the UTF-8 buffer data, not including null terminator.
      +/
     size_t ulStringGetLength(ULString);
+    //size_t ulStringGetLength(const(ULString));
 
     /++
      + Whether this string is empty or not.
