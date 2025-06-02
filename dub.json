@@ -10,7 +10,7 @@
       "targetType": "executable",
       "platforms": ["windows"],
       //"versions": ["MEM_DBG"],
-      "copyFiles": ["lib/win/dll/*.dll"],
+      "copyFiles": ["lib/win/dll/*.dll", "resources/*"],
       "libs": [
         "lib/win/AppCore",
         "lib/win/Ultralight",

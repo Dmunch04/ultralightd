@@ -13,6 +13,6 @@ public struct UltralightConfig
 
     public void setAnimationTimerDelay(double delay)
     {
-        ulConfigSetAnimationTimerDelay(internal, delay);
+        //ulConfigSetAnimationTimerDelay(internal, delay);
     }
 }

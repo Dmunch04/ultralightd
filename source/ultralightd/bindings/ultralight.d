@@ -39,6 +39,7 @@ public alias ULGamepadEvent = C_GamepadEvent*;
 public alias ULGamepadAxisEvent = C_GamepadAxisEvent*;
 public alias ULGamepadButtonEvent = C_GamepadButtonEvent*;
 public alias ULSurface = C_Surface*;
+public alias ULBitmapSurface = C_Surface*;
 public alias ULFontFile = C_FontFile*;
 public alias ULImageSource = C_ImageSource*;
 public alias ULChar16 = ushort;
@@ -463,7 +464,7 @@ extern(C) @system
     public ULString ulCreateStringUTF16(ULChar16* str, size_t length);
     public ULString ulCreateStringFromCopy(ULString str);
     public void ulDestroyString(ULString str);
-    public const(char)* ulStringGetData(ULString str);
+    public char* ulStringGetData(ULString str);
     public size_t ulStringGetLength(ULString str);
     public bool ulStringIsEmpty(ULString str);
     public void ulStringAssignString(ULString str, ULString new_str);
@@ -517,4 +518,199 @@ extern(C) @system
     public void ulConfigSetFontHinting(ULConfig config, ULFontHinting font_hinting);
     public void ulConfigSetFontGamma(ULConfig config, double font_gamma);
     public void ulConfigSetUserStylesheet(ULConfig config, ULString css_string);
+    public void ulConfigSetForceRepaint(ULConfig config, bool enabled);
+    public void ulConfigSetAnimationTimerDelay(ULConfig config, double delay);
+    public void ulConfigSetScrollTimerDelay(ULConfig config, double delay);
+    public void ulConfigSetRecycleDelay(ULConfig config, double delay);
+    public void ulConfigSetMemoryCacheSize(ULConfig config, uint size);
+    public void ulConfigSetPageCacheSize(ULConfig config, uint size);
+    public void ulConfigSetOverrideRAMSize(ULConfig config, uint size);
+    public void ulConfigSetMinLargeHeapSize(ULConfig config, uint size);
+    public void ulConfigSetMinSmallHeapSize(ULConfig config, uint size);
+    public void ulConfigSetNumRendererThreads(ULConfig config, uint num_renderer_threads);
+    public void ulConfigSetMaxUpdateTime(ULConfig config, double max_update_time);
+    public void ulConfigSetBitmapAlignment(ULConfig config, uint bitmap_alignment);
+}
+
+/// Function declarations for the View Config API
+extern(C) @system
+{
+    public ULViewConfig ulCreateViewConfig();
+    public void ulDestroyViewConfig(ULViewConfig config);
+    public void ulViewConfigSetDisplayId(ULViewConfig config, uint display_id);
+    public void ulViewConfigSetIsAccelerated(ULViewConfig config, bool is_accelerated);
+    public void ulViewConfigSetIsTransparent(ULViewConfig config, bool is_transparent);
+    public void ulViewConfigSetInitialDeviceScale(ULViewConfig config, double initial_device_scale);
+    public void ulViewConfigSetInitialFocus(ULViewConfig config, bool is_focused);
+    public void ulViewConfigSetEnableImages(ULViewConfig config, bool enabled);
+    public void ulViewConfigSetEnableJavaScript(ULViewConfig config, bool enabled);
+    public void ulViewConfigSetFontFamilyStandard(ULViewConfig config, ULString font_name);
+    public void ulViewConfigSetFontFamilyFixed(ULViewConfig config, ULString font_name);
+    public void ulViewConfigSetFontFamilySerif(ULViewConfig config, ULString font_name);
+    public void ulViewConfigSetFontFamilySansSerif(ULViewConfig config, ULString font_name);
+    public void ulViewConfigSetUserAgent(ULViewConfig config, ULString font_name);
+}
+
+/// Function declarations for the Platform API
+extern(C) @system
+{
+    public void ulPlatformSetLogger(ULLogger logger);
+    public void ulPlatformSetFileSystem(ULFileSystem file_system);
+    public void ulPlatformSetFontLoader(ULFontLoader font_loader);
+    public void ulPlatformSetSurfaceDefinition(ULSurfaceDefinition surface_definition);
+    public void ulPlatformSetGPUDriver(ULGPUDriver gpu_driver);
+    public void ulPlatformSetClipboard(ULClipboard clipboard);
+}
+
+/// Function declarations for the Renderer API
+extern(C) @system
+{
+    public ULRenderer ulCreateRenderer(ULConfig config);
+    public void ulDestroyRenderer(ULRenderer renderer);
+    public void ulUpdate(ULRenderer renderer);
+    public void ulRefreshDisplay(ULRenderer renderer, uint display_id);
+    public void ulRender(ULRenderer renderer);
+    public void ulPurgeMemory(ULRenderer renderer);
+    public void ulLogMemoryUsage(ULRenderer renderer);
+    public bool ulStartRemoteInspectorServer(ULRenderer renderer, const(char)* address, ushort port);
+    public void ulSetGamepadDetails(ULRenderer renderer, uint index, ULString id, uint axis_count, uint button_count);
+    public void ulFireGamepadEvent(ULRenderer renderer, ULGamepadEvent evt);
+    public void ulFireGamepadAxisEvent(ULRenderer renderer, ULGamepadAxisEvent evt);
+    public void ulFireGamepadButtonEvent(ULRenderer renderer, ULGamepadButtonEvent evt);
+}
+
+/// Function declarations for the Session API
+extern(C) @system
+{
+    public ULSession ulCreateSession(ULRenderer renderer, bool is_persistent, ULString name);
+    public void ulDestroySession(ULSession session);
+    public ULSession ulDefaultSession(ULRenderer renderer);
+    public bool ulSessionIsPersistent(ULSession session);
+    public ULString ulSessionGetName(ULSession session);
+    public ulong ulSessionGetId(ULSession session);
+    public ULString ulSessionGetDiskPath(ULSession session);
+}
+
+/// Function declarations for the Surface API
+extern(C) @system
+{
+    public uint ulSurfaceGetWidth(ULSurface surface);
+    public uint ulSurfaceGetHeight(ULSurface surface);
+    public uint ulSurfaceGetRowBytes(ULSurface surface);
+    public size_t ulSurfaceGetSize(ULSurface surface);
+    public void* ulSurfaceLockPixels(ULSurface surface);
+    public void ulSurfaceUnlockPixels(ULSurface surface);
+    public void ulSurfaceResize(ULSurface surface, uint width, uint height);
+    public void ulSurfaceSetDirtyBounds(ULSurface surface, ULIntRect bounds);
+    public ULIntRect ulSurfaceGetDirtyBounds(ULSurface surface);
+    public void ulSurfaceClearDirtyBounds(ULSurface surface);
+    public void* ulSurfaceGetUserData(ULSurface surface);
+    public ULBitmap ulSurfaceGetBitmap(ULBitmapSurface surface);
+}
+
+/// Function declarations for the View API
+extern(C) @system
+{
+    public ULView ulCreateView(ULRenderer renderer, uint width, uint height, ULViewConfig view_config, ULSession session);
+    public void ulDestroyView(ULView view);
+    public ULString ulViewGetURL(ULView view);
+    public ULString ulViewGetTitle(ULView view);
+    public uint ulViewGetWidth(ULView view);
+    public uint ulViewGetHeight(ULView view);
+    public uint ulViewGetDisplayId(ULView view);
+    public void ulViewSetDisplayId(ULView view, uint display_id);
+    public double ulViewGetDeviceScale(ULView view);
+    public void ulViewSetDeviceScale(ULView view, double scale);
+    public bool ulViewIsAccelerated(ULView view);
+    public bool ulViewIsTransparent(ULView view);
+    public bool ulViewIsLoading(ULView view);
+    public ULRenderTarget ulViewGetRenderTarget(ULView view);
+    public ULSurface ulViewGetSurface(ULView view);
+    public void ulViewLoadHTML(ULView view, ULString html_string);
+    public void ulViewLoadURL(ULView view, ULString url_string);
+    public void ulViewResize(ULView view, uint width, uint height);
+    public JSContextRef ulViewLockJSContext(ULView view);
+    public void ulViewUnlockJSContext(ULView view);
+    public ULString ulViewEvaluateScript(ULView view, ULString js_string, ULString* exception);
+    public bool ulViewCanGoBack(ULView view);
+    public bool ulViewCanGoForward(ULView view);
+    public void ulViewGoBack(ULView view);
+    public void ulViewGoForward(ULView view);
+    public void ulViewGoToHistoryOffset(ULView view, int offset);
+    public void ulViewReload(ULView view);
+    public void ulViewStop(ULView view);
+    public void ulViewFocus(ULView view);
+    public void ulViewUnfocus(ULView view);
+    public bool ulViewHasFocus(ULView view);
+    public bool ulViewHasInputFocus(ULView view);
+    public void ulViewFireKeyEvent(ULView view, ULKeyEvent key_event);
+    public void ulViewFireMouseEvent(ULView view, ULMouseEvent mouse_event);
+    public void ulViewFireScrollEvent(ULView view, ULScrollEvent scroll_event);
+    public void ulViewSetChangeTitleCallback(ULView view, ULChangeTitleCallback callback, void* user_data);
+    public void ulViewSetChangeURLCallback(ULView view, ULChangeURLCallback callback, void* user_data);
+    public void ulViewSetChangeTooltipCallback(ULView view, ULChangeTooltipCallback callback, void* user_data);
+    public void ulViewSetChangeCursorCallback(ULView view, ULChangeCursorCallback callback, void* user_data);
+    public void ulViewSetAddConsoleMessageCallback(ULView view, ULAddConsoleMessageCallback callback, void* user_data);
+    public void ulViewSetCreateChildViewCallback(ULView view, ULCreateChildViewCallback callback, void* user_data);
+    public void ulViewSetCreateInspectorViewCallback(ULView view, ULCreateInspectorViewCallback callback, void* user_data);
+    public void ulViewSetBeginLoadingCallback(ULView view, ULBeginLoadingCallback callback, void* user_data);
+    public void ulViewSetFinishLoadingCallback(ULView view, ULFinishLoadingCallback callback, void* user_data);
+    public void ulViewSetFailLoadingCallback(ULView view, ULFailLoadingCallback callback, void* user_data);
+    public void ulViewSetWindowObjectReadyCallback(ULView view, ULWindowObjectReadyCallback callback, void* user_data);
+    public void ulViewSetDOMReadyCallback(ULView view, ULDOMReadyCallback callback, void* user_data);
+    public void ulViewSetUpdateHistoryCallback(ULView view, ULUpdateHistoryCallback callback, void* user_data);
+    public void ulViewSetNeedsPaint(ULView view, bool needs_paint);
+    public bool ulViewGetNeedsPaint(ULView view);
+    public void ulViewCreateLocalInspectorView(ULView view);
+}
+
+/// Function declarations for the KeyEvent API
+extern(C) @system
+{
+    public ULKeyEvent ulCreateKeyEvent(ULKeyEventType type, uint modifiers, int virtual_key_code, int native_key_code, ULString text, ULString unmodified_text, bool is_keypad, bool is_auto_repeat, bool is_system_key);
+    public void ulDestroyKeyEvent(ULKeyEvent evt);
+}
+
+/// Function declarations for the MouseEvent API
+extern(C) @system
+{
+    public ULMouseEvent ulCreateMouseEvent(ULMouseEventType type, int x, int y, ULMouseButton button);
+    public void ulDestroyMouseEvent(ULMouseEvent evt);
+}
+
+/// Function declarations for the ScrollEvent API
+extern(C) @system
+{
+    public ULScrollEvent ulCreateScrollEvent(ULScrollEventType type, int delta_x, int delta_y);
+    public void ulDestroyScrollEvent(ULScrollEvent evt);
+}
+
+/// Function declarations for the GamepadEvent API
+extern(C) @system
+{
+    public ULGamepadEvent ulCreateGamepadEvent(uint index, ULGamepadEventType type);
+    public void ulDestroyGamepadEvent(ULGamepadEvent evt);
+    public ULGamepadAxisEvent ulCreateGamepadAxisEvent(uint index, uint axis_index, double value);
+    public void ulDestroyGamepadAxisEvent(ULGamepadAxisEvent evt);
+    public ULGamepadButtonEvent ulCreateGamepadButtonEvent(uint index, uint button_index, double value);
+    public void ulDestroyGamepadButtonEvent(ULGamepadButtonEvent evt);
+}
+
+/// Function declarations for the FontFile API
+extern(C) @system
+{
+    public ULFontFile ulFontFileCreateFromFilePath(ULString file_path);
+    public ULFontFile ulFontFileCreateFromBuffer(ULBuffer buffer);
+    public void ulDestroyFontFile(ULFontFile font_file);
+}
+
+/// Function declarations for the ImageSource API
+extern(C) @system
+{
+    public ULImageSource ulCreateImageSourceFromTexture(uint width, uint height, uint texture_id, ULRect texture_uv, ULBitmap bitmap);
+    public ULImageSource ulCreateImageSourceFromBitmap(ULBitmap bitmap);
+    public void ulDestroyImageSource(ULImageSource image_source);
+    public void ulImageSourceInvalidate(ULImageSource image_source);
+    public void ulImageSourceProviderAddImageSource(ULString id, ULImageSource image_source);
+    public void ulImageSourceProviderRemoveImageSource(ULString id);
 }
