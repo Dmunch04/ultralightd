@@ -1,5 +1,77 @@
 module ultralightd.wrapper.util;
 
+public mixin template Managed(T, alias CopyFn, alias DisposeFn)
+{
+    //private template 
+    import std.traits : isFunctionPointer, ParameterTypeTuple, ReturnType;
+    static assert(isFunctionPointer!CopyFn, "a");
+    static assert(isFunctionPointer!DisposeFn, "b");
+    
+    /// Helper method to call the correct handle copy function.
+    private T copy() @trusted
+    {
+        auto raw = CopyFn(this.handle);
+        if (raw is null)
+        {
+            throw new Exception("Failed to copy handle");
+        }
+        
+        return cast(T) raw;
+    }
+    
+    /// Helper method to call the correct handle destructor.
+    private void dispose() @trusted
+    {
+        DisposeFn(this.handle);
+    }
+    
+    /// idk
+    public T release()
+    {
+        auto raw = this.handle;
+        this.handle = null;
+        this.owned = false;
+        
+        return cast(T) raw;
+    }
+    
+    /// Postblit for safely copying
+    this(this) @trusted
+    {
+        if (this.handle !is null)
+        {
+            // original handle was not null, so we need to copy it
+            auto newHandle = this.copy();
+            assert(newHandle !is null, "New handle was null");
+            
+            this.handle = newHandle;
+            this.owned = true;
+        }
+        else
+        {
+            // original handle was null, so this copy is as well
+            this.owned = true;
+        }
+    }
+    
+    /// Destructor for safely disposing of the handle
+    ~this()
+    {
+        version(MEM_DBG) import std.stdio : writeln;
+        version(MEM_DBG) writeln(typeof(this).stringof ~ "::dtor() called. owned=", this.owned, ", handle=", cast(void*) this.handle);
+        
+        if (this.owned && this.handle !is null)
+        {
+            version(MEM_DBG) writeln("   destroying handle: ", cast(void*) this.handle);
+            this.dispose();
+        }
+        else
+        {
+            version(MEM_DBG) writeln("   not destroying handle: ", cast(void*) this.handle);
+        }
+    }
+}
+
 // TODO: should we use function pointers instead of their names?
 public mixin template Handled(T, alias copyFn, alias diposeFn)
 {

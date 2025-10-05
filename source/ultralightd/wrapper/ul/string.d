@@ -4,14 +4,15 @@ import ultralightd.bindings.ultralight;
 import ultralightd.wrapper.util;
 
 /++
- + A wrapper for the ULString type.
+ + A safe wrapper for the ULString type.
  +/
 public struct String
 {
     package ULString handle;
     private bool owned;
 
-    mixin Handled!(ULString, "ulCreateStringFromCopy", "ulDestroyString");
+    //mixin Handled!(ULString, "ulCreateStringFromCopy", "ulDestroyString");
+    static mixin Managed!(ULString, &ulCreateStringFromCopy, &ulDestroyString);
 
     /++
      + Creates a new empty String
