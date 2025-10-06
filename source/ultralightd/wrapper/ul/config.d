@@ -11,12 +11,19 @@ import ultralightd.wrapper.ul.string;
  +/
 public struct Config
 {
-    package ULConfig handle;
+    package(ultralightd.wrapper) ULConfig handle;
 
-    /// Constructor for creating a new default config
-    public this()
+    @disable public this();
+
+    private this(ULConfig raw)
     {
-        this.handle = ulCreateConfig();
+        this.handle = raw;
+    }
+
+    /// Static constructor factory for creating a new default config
+    public static Config create()
+    {
+        return Config(ulCreateConfig());
     }
 
     /// Destructor for safely disposing of the handle
@@ -139,7 +146,7 @@ public struct Config
     /// Set the number of threads to use in the Renderer.
     public ref Config setNumRendererThreads(uint numThreads)
     {
-        ulConfigSetNumRendererThreads(handle, threads);
+        ulConfigSetNumRendererThreads(handle, numThreads);
         return this;
     }
 
@@ -153,7 +160,7 @@ public struct Config
     /// Set the alignment in bytes of the BitmapSurface.
     public ref Config setBitmapAlignment(uint alignment)
     {
-        ulConfigSetBitmapAlignment(config, alignment);
+        ulConfigSetBitmapAlignment(handle, alignment);
         return this;
     }
 }

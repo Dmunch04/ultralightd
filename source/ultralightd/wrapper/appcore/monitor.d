@@ -5,13 +5,13 @@ import ultralightd.wrapper.util;
 
 public struct Monitor
 {
-    private ULMonitor monitor;
+    package(ultralightd.wrapper) ULMonitor handle;
 
     @disable public this();
 
     private this(ULMonitor raw)
     {
-        this.monitor = raw;
+        this.handle = raw;
     }
 
     public static Monitor fromRaw(ULMonitor raw)
@@ -19,11 +19,11 @@ public struct Monitor
         return Monitor(raw);
     }
 
-    public const(ULMonitor) raw() const @property => this.monitor;
+    public ULMonitor raw() => handle;
 
-    public double scale() const @property => ulMonitorGetScale(this.raw.asMut!ULMonitor);
+    public double scale() => ulMonitorGetScale(handle);
 
-    public uint width() const @property => ulMonitorGetWidth(this.raw.asMut!ULMonitor);
+    public uint width() => ulMonitorGetWidth(handle);
 
-    public uint height() const @property => ulMonitorGetHeight(this.raw.asMut!ULMonitor);
+    public uint height() => ulMonitorGetHeight(handle);
 }

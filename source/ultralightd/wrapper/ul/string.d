@@ -8,11 +8,19 @@ import ultralightd.wrapper.util;
  +/
 public struct String
 {
-    package ULString handle;
+    package(ultralightd.wrapper) ULString handle;
     private bool owned;
 
+    @disable public this();
+
+    private this(ULString raw, bool owned)
+    {
+        this.handle = raw;
+        this.owned = owned;
+    }
+
     //mixin Handled!(ULString, "ulCreateStringFromCopy", "ulDestroyString");
-    static mixin Managed!(ULString, &ulCreateStringFromCopy, &ulDestroyString);
+    /*static*/ mixin Managed!(ULString, &ulCreateStringFromCopy, &ulDestroyString);
 
     /++
      + Creates a new empty String
