@@ -55,6 +55,8 @@ public struct String
         auto raw = ulCreateStringFromCopy(str.handle);
         return String(raw, true);
     }
+    
+    public static String fromRaw(ULString raw, bool owned) => String(raw, owned);
 
     /// Get a reference to the raw ULString handle.
     public ULString raw() => this.handle;
